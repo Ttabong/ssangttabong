@@ -6,11 +6,14 @@ import ImageButton from '@/components/ImageButton';
 
 const defaultImage = '/default-image.jpg';
 
-type Props = {
-    params: { id: string };
+type ListingDetailPageProps = {
+  params: {
+    id: string;
+  };
 };
 
-export default async function ListingDetailPage({ params }: Props) {
+
+export default async function ListingDetailPage({ params }: ListingDetailPageProps) {
 const { data, error } = await supabase
     .from('listings')
     .select('*')
