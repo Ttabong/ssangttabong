@@ -18,7 +18,7 @@ export default function Home() {
         <section id="products" className="products-section">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
             {[
-              { title: "원 / 투룸", image: "/images/apart.jpg", href: "/listings/room" },
+              { title: "원 / 투룸", image: "/images/apart.jpg", href: "/listings/onetwo" },
               { title: "아파트", image: "/images/apart.jpg", href: "/listings/apart" },
               { title: "주택 / 빌라", image: "/images/house.jpg", href: "/listings/house" },
               { title: "오피스텔", image: "/images/office.jpg", href: "/listings/officetel" },

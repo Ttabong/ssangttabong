@@ -9,9 +9,12 @@ import ListingsGrid, { Listing } from './ListingsGrid';
 type ListingsPageProps = {
   title: string;
   description: string;
+  fixedUsage?: string[]; //용도별 리스트 출력시 용도를 넘김
+  hideUsage?: boolean; //  필터패널 용도 숨김용
+  fixedRoomCount?: number[]; // 원,투룸 리스트 출력시 방수를 넘김
 };
 
-export default function ListingsPage({ title, description }: ListingsPageProps) {
+export default function ListingsPage({ title, description, fixedUsage, fixedRoomCount, hideUsage, }: ListingsPageProps) {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState<'name' | 'price' | 'id_num'>('id_num');
@@ -52,14 +55,22 @@ export default function ListingsPage({ title, description }: ListingsPageProps) 
     fetchData();
   }, []);
 
-  const filteredListings = useMemo(() => {
-    return listings
-      .filter((item) => {
-        const usageArray = Array.isArray(item.usage) ? item.usage : [item.usage];
+const filteredListings = useMemo(() => {
+  return listings
+    .filter((item) => {
+      const usageArray = Array.isArray(item.usage) ? item.usage : [item.usage];
 
-        if (selectedTradeType && selectedTradeType !== '전체' && item.type !== selectedTradeType)
-          return false;
+      // fixedRoomCount가 있으면 room_count 필터 강제 적용
+      if (fixedRoomCount && fixedRoomCount.length > 0) {
+        if (!fixedRoomCount.includes(item.room_count ?? 0)) return false;
+      }
 
+      // fixedUsage가 있으면 usage 필터 강제 적용
+      if (fixedUsage && fixedUsage.length > 0) {
+        const match = fixedUsage.some((usage) => usageArray.includes(usage));
+        if (!match) return false;
+      } else {
+        // fixedUsage 없으면 기존 선택한 usage 필터 적용
         if (selectedUsageTypes.length > 0) {
           const match = selectedUsageTypes.some((usage) => {
             if (usage === '원/투룸') {
@@ -72,69 +83,81 @@ export default function ListingsPage({ title, description }: ListingsPageProps) 
           });
           if (!match) return false;
         }
+      }
 
-        if (selectedParkingOptions.length > 0) {
-          const parkingOk = selectedParkingOptions[0] === 'O';
-          if (item.parking !== parkingOk) return false;
-        }
+      // 기존 거래 유형 필터
+      if (selectedTradeType && selectedTradeType !== '전체' && item.type !== selectedTradeType)
+        return false;
 
-        if (selectedPetAllowedOptions.length > 0) {
-          const petOk = selectedPetAllowedOptions[0] === 'O';
-          if (item.pet_allowed !== petOk) return false;
-        }
+      // 주차 필터
+      if (selectedParkingOptions.length > 0) {
+        const parkingOk = selectedParkingOptions[0] === 'O';
+        if (item.parking !== parkingOk) return false;
+      }
 
-        if (
-          selectedTradeType === '매매' ||
-          selectedTradeType === '' ||
-          selectedTradeType === '전체'
-        ) {
-          if (item.price != null && (item.price < minPrice || item.price > maxPrice)) return false;
-        } else if (selectedTradeType === '전세') {
-          if (item.deposit != null && (item.deposit < minDeposit || item.deposit > maxDeposit)) return false;
-        } else if (selectedTradeType === '월세') {
-          if (item.deposit != null && (item.deposit < minDeposit || item.deposit > maxDeposit)) return false;
-          if (item.monthly != null && (item.monthly < minMonthly || item.monthly > maxMonthly)) return false;
-        }
+      // 애완동물 필터
+      if (selectedPetAllowedOptions.length > 0) {
+        const petOk = selectedPetAllowedOptions[0] === 'O';
+        if (item.pet_allowed !== petOk) return false;
+      }
 
-        if (searchTerm && !item.title.includes(searchTerm.trim())) return false;
+      // 가격 / 보증금 / 월세 필터
+      if (
+        selectedTradeType === '매매' ||
+        selectedTradeType === '' ||
+        selectedTradeType === '전체'
+      ) {
+        if (item.price != null && (item.price < minPrice || item.price > maxPrice)) return false;
+      } else if (selectedTradeType === '전세') {
+        if (item.deposit != null && (item.deposit < minDeposit || item.deposit > maxDeposit)) return false;
+      } else if (selectedTradeType === '월세') {
+        if (item.deposit != null && (item.deposit < minDeposit || item.deposit > maxDeposit)) return false;
+        if (item.monthly != null && (item.monthly < minMonthly || item.monthly > maxMonthly)) return false;
+      }
 
-        return true;
-      })
-      .sort((a, b) => {
-        if (sortKey === 'name') {
-          return sortOrder === 'asc'
-            ? a.title.localeCompare(b.title)
-            : b.title.localeCompare(a.title);
-        } else if (sortKey === 'price') {
-          const aPrice =
-            a.type === '매매' ? a.price ?? 0 : a.type === '전세' ? a.deposit : a.monthly ?? 0;
-          const bPrice =
-            b.type === '매매' ? b.price ?? 0 : b.type === '전세' ? b.deposit : b.monthly ?? 0;
+      // 검색어 필터
+      if (searchTerm && !item.title.includes(searchTerm.trim())) return false;
 
-          return sortOrder === 'asc' ? aPrice - bPrice : bPrice - aPrice;
-        } else if (sortKey === 'id_num') {
-          return sortOrder === 'asc'
-            ? (a.id_num ?? 0) - (b.id_num ?? 0)
-            : (b.id_num ?? 0) - (a.id_num ?? 0);
-        }
-        return 0;
-      });
-  }, [
-    listings,
-    selectedTradeType,
-    selectedUsageTypes,
-    selectedParkingOptions,
-    selectedPetAllowedOptions,
-    minPrice,
-    maxPrice,
-    minDeposit,
-    maxDeposit,
-    minMonthly,
-    maxMonthly,
-    searchTerm,
-    sortKey,
-    sortOrder,
-  ]);
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortKey === 'name') {
+        return sortOrder === 'asc'
+          ? a.title.localeCompare(b.title)
+          : b.title.localeCompare(a.title);
+      } else if (sortKey === 'price') {
+        const aPrice =
+          a.type === '매매' ? a.price ?? 0 : a.type === '전세' ? a.deposit : a.monthly ?? 0;
+        const bPrice =
+          b.type === '매매' ? b.price ?? 0 : b.type === '전세' ? b.deposit : b.monthly ?? 0;
+
+        return sortOrder === 'asc' ? aPrice - bPrice : bPrice - aPrice;
+      } else if (sortKey === 'id_num') {
+        return sortOrder === 'asc'
+          ? (a.id_num ?? 0) - (b.id_num ?? 0)
+          : (b.id_num ?? 0) - (a.id_num ?? 0);
+      }
+      return 0;
+    });
+}, [
+  listings,
+  selectedTradeType,
+  selectedUsageTypes,
+  selectedParkingOptions,
+  selectedPetAllowedOptions,
+  minPrice,
+  maxPrice,
+  minDeposit,
+  maxDeposit,
+  minMonthly,
+  maxMonthly,
+  searchTerm,
+  sortKey,
+  sortOrder,
+  fixedRoomCount,
+  fixedUsage,
+]);
+
 
   function toggleUsageType(usage: string) {
     if (selectedUsageTypes.includes(usage)) {
@@ -180,6 +203,8 @@ export default function ListingsPage({ title, description }: ListingsPageProps) 
           onMaxDepositChange={setMaxDepositStr}
           onMinMonthlyChange={setMinMonthlyStr}
           onMaxMonthlyChange={setMaxMonthlyStr}
+       //   hideUsage={!!fixedUsage}
+          hideUsage={hideUsage} // 추가
         />
       </section>
     
@@ -199,7 +224,7 @@ export default function ListingsPage({ title, description }: ListingsPageProps) 
       <div className="h-3" />
 
         <ListingsGrid listings={filteredListings} loading={loading} />
-      
+      <div className="h-8" />
     </main>
   );
 }

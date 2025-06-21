@@ -26,7 +26,7 @@ export default function SearchSortBar({
     <div className="flex justify-between items-center px-12 mb-4 w-full flex-wrap gap-4">
       <input
         type="text"
-        placeholder="매물검색..."
+        placeholder=" 매물검색..."
         value={searchTerm}
         onChange={onSearchTermChange}
         className="

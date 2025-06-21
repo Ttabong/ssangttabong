@@ -7,20 +7,22 @@ export default function Header() {
   return (
       <header>
         <div className="container header-inner">
-          <div className="logo">
-            <span>수 부동산</span>
-            <span className="text-small"> 공인중개사 사무소</span>
-          </div>
+          <Link href='/'>   
+            <div className="logo">
+              <span>수 부동산</span>
+              <span className="text-small"> 공인중개사 사무소</span>
+            </div>
+          </Link>
           <nav>
             <ul className="nav-links">
               <li>
                 <Link href="/">Home</Link>
               </li>
               <li>
-                <Link href="/about">물건정보</Link>
+                <a href="https://www.gwangjin.go.kr/portal/main/main.do" target="_blank" rel="noopener noreferrer">지역정보 </a>
               </li>
               <li>
-                <Link href="/about">지역정보</Link>
+                <a href="https://www.youtube.com/@ssangttabong" target="_blank" rel="noopener noreferrer">맛집정보 </a>
               </li>
               <li>
                 <Link href="/about">About.</Link>

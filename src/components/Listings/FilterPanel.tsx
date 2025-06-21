@@ -28,6 +28,7 @@ type FilterPanelProps = {
   onMaxDepositChange: React.Dispatch<React.SetStateAction<string>>;
   onMinMonthlyChange: React.Dispatch<React.SetStateAction<string>>;
   onMaxMonthlyChange: React.Dispatch<React.SetStateAction<string>>;
+  hideUsage?: boolean; // 용도 선택 UI를 숨기기 위한 선택적 prop
 };
 
 export default function FilterPanel({
@@ -51,15 +52,16 @@ export default function FilterPanel({
   onMaxDepositChange,
   onMinMonthlyChange,
   onMaxMonthlyChange,
+  hideUsage = false,  // 기본값 지정해도 좋음
 }: FilterPanelProps) {
   return (
 
     
-    <div className="w-full flex flex-wrap items-center font-semibold">
+    <div className="w-full flex flex-wrap items-center font-semibold" style={{ paddingBottom: '0.5rem'}}>
   
       {/* 거래 유형 */}
       <div>
-        <p className="font-semibold text-yellow-400 h-7">◈ 거래 유형</p>
+        <p className="font-semibold text-yellow-400 h-7" >◈ 거래 유형</p>
         <div className="flex gap-4">
           {['전체', '매매', '전세', '월세'].map((type) => (
             <label key={type} className="inline-flex items-center gap-1 cursor-pointer">
@@ -78,23 +80,25 @@ export default function FilterPanel({
       </div>
 
       {/* 용도 */}
-      <div>
-        <p className="font-semibold text-yellow-400 h-7">◈ 용도</p>
-        <div className="flex flex-wrap gap-3">
-          {USAGE_TYPES.map((usage) => (
-            <label key={usage} className="inline-flex items-center gap-1 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={selectedUsageTypes.includes(usage)}
-                onChange={() => onUsageTypeToggle(usage)}
-                className="accent-sky-400"
-              />
-              {usage}
-            </label>
-          ))}
-          <div className='w-10'></div>
+      {!hideUsage && (
+        <div>
+          <p className="font-semibold text-yellow-400 h-7">◈ 용도</p>
+          <div className="flex flex-wrap gap-3">
+            {USAGE_TYPES.map((usage) => (
+              <label key={usage} className="inline-flex items-center gap-1 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedUsageTypes.includes(usage)}
+                  onChange={() => onUsageTypeToggle(usage)}
+                  className="accent-sky-400"
+                />
+                {usage}
+              </label>
+            ))}
+            <div className='w-10'></div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 주차 */}
       <div>

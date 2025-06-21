@@ -31,14 +31,13 @@ export default function ListingsGrid({ listings, loading }: Props) {
 
   return (
 
-
     <section className="w-full grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
       {listings.map((item) => (
         <div
           key={item.id}
           className="relative rounded-md overflow-hidden hover:scale-105 transition-transform"
         >
-          <Link href={`/listings/detail/${item.id}`}>
+          <Link href={`/listings/${item.id}`}>
             <Image
               src={item.image_url_1}
               alt={item.title}
