@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image'; // next/image import 추가
 import { createClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
 
@@ -54,6 +55,9 @@ export default async function DetailPage({ params }: DetailPageProps): Promise<J
     imageList.push(defaultImage);
   }
 
+  // usage가 배열일 수도 있고, 아니면 문자열일 수도 있으니 안전하게 처리
+  const usageText = Array.isArray(data.usage) ? data.usage.join(', ') : data.usage ?? '-';
+
   // 상세정보 항목 배열 (빈 배열은 구분용, 건너뜀)
   const details: [string, React.ReactNode][] = [
     ['\u00A0\u00A0●\u00A0거래유형', data.type],
@@ -63,7 +67,7 @@ export default async function DetailPage({ params }: DetailPageProps): Promise<J
         ? formatKoreanPrice(data.price)
         : `${formatKoreanPrice(data.deposit)} / ${formatKoreanPrice(data.monthly)}`,
     ],
-    ['\u00A0\u00A0●\u00A0용도', data.usage.join(', ')],
+    ['\u00A0\u00A0●\u00A0용도', usageText],
     ['\u00A0\u00A0●\u00A0방 수', data.room_count ?? '-'],
     ['\u00A0\u00A0●\u00A0욕실 수', data.bathroom_count ?? '-'],
     ['\u00A0\u00A0●\u00A0주차', data.parking ? '가능' : '불가'],
@@ -100,10 +104,18 @@ export default async function DetailPage({ params }: DetailPageProps): Promise<J
                   onClick={() => window.open(src, '_blank')}
                   aria-label={`매물 사진 ${idx + 1} 확대보기`}
                 >
-                  <img
+                  {/* Next.js 이미지 최적화를 위해 아래 img 대신 Image 컴포넌트 사용 권장 */}
+                  {/* <img
                     src={src}
                     alt={`매물 사진 ${idx + 1}`}
                     className="w-full h-40 object-cover hover:scale-105 transition-transform duration-200"
+                  /> */}
+                  <Image
+                    src={src}
+                    alt={`매물 사진 ${idx + 1}`}
+                    width={320}
+                    height={160}
+                    className="rounded-md object-cover hover:scale-105 transition-transform duration-200"
                   />
                 </button>
               ))}
