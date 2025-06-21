@@ -1,16 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ListPage from './pages/ListPage';
-import DetailPage from './pages/DetailPage';
+// src/app.tsx
+import './globals.css';
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<ListPage />} />
-        <Route path="/detail/:id" element={<DetailPage />} />
-      </Routes>
-    </Router>
-  );
+export default function App({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }
-
-export default App;
