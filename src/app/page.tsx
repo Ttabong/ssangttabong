@@ -12,7 +12,7 @@ export default function Home() {
         <section className="hero text-center mb-12">
           <h2 className="text-2xl font-bold mb-2">신뢰와 친절로 만족을 약속합니다</h2>
           <p className="mb-4 text-lg">어떤 물건을 찾고 계신가요?</p>
-          <a href="/listings" className="btn-primary inline-block px-6 py-2 bg-blue-600 text-white rounded">전체매물 둘러보기</a>
+          <link href="/listings" className="btn-primary inline-block px-6 py-2 bg-blue-600 text-white rounded">전체매물 둘러보기</link>
         </section>
 
         <section id="products" className="products-section">

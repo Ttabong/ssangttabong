@@ -9,7 +9,7 @@ declare module 'react-slick' {
     slidesToShow?: number;
     slidesToScroll?: number;
     arrows?: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
   }
 
   export default class Slider extends React.Component<Settings> {}

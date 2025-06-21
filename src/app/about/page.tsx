@@ -1,6 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link'; // 흐려져 보이는 이유: 아래에서 Link를 아직 안 썼기 때문
-
 
 
 export default function Home() {
