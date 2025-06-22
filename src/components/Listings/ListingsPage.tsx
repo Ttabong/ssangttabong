@@ -53,9 +53,11 @@ export default function ListingsPage({
 
     async function fetchData() {
       setLoading(true);
-      const { data, error } = await supabase.from('listings').select('*');
+      
+    const { data, error } = await supabase.from('listings').select('*');
+
       if (error) {
-        console.error(error);
+        console.error('❌ Supabase fetch error:', error.message);
         setListings([]);
       } else {
         setListings(data as Listing[]);
