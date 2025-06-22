@@ -28,6 +28,8 @@ export default function Header() {
             </Link>
               
           </div>
+
+<div className="text-xl text-red-500 text-bold"> 실제 매물이 아닌 테스트 페이지 입니다. </div>
           
           <nav className="w-full flex justify-end pr-4">
             <ul className="flex space-x-4 text-sm sm:text-base font-semibold gap-4">

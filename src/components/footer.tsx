@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="container footer-inner">
           <div>© 2025 Soo&Ssanttabong. All rights reserved.</div>
           <ul className="social-links">
-            <li>
+        {/*    <li>
               <a href="#" aria-label="youtube">
                 youtube
               </a>
@@ -19,7 +19,9 @@ export default function Footer() {
               <a href="#" aria-label="Instagram">
                 Instagram
               </a>
-            </li>
+            </li> */} 
+
+
           </ul>
         </div>
       </footer>
