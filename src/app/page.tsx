@@ -16,9 +16,9 @@ export default function Home() {
         </section>
 
         <section id="products" className="products-section">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+          <div className="flex flex-wrap grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 text-sbar mx-auto text-orange-400">
             {[
-              { title: "원 / 투룸", image: "/images/apart.jpg", href: "/listings/onetwo" },
+              { title: " 원 / 투룸", image: "/images/apart.jpg", href: "/listings/onetwo" },
               { title: "아파트", image: "/images/apart.jpg", href: "/listings/apart" },
               { title: "주택 / 빌라", image: "/images/house.jpg", href: "/listings/house" },
               { title: "오피스텔", image: "/images/office.jpg", href: "/listings/officetel" },
@@ -30,7 +30,7 @@ export default function Home() {
                 <Image src={image} alt={`${title} 이미지`} width={320} height={300} className="rounded" />
                 {/* <h3 className="text-xl font-semibold mt-4">{title}</h3> */}
                 {/* <div className="price mt-2 text-gray-700">매매 | 전세 | 월세</div> */}
-                <span className="btn-secondary mt-4 px-4 py-2 bg-gray-200 rounded cursor-pointer font-bold text-white text-l">{title}</span>
+                <span className="btn-maincard mt-4 px-4 py-2 bg-gray-200 rounded cursor-pointer">{title}</span>
               </article>
               </Link>
             ))}
