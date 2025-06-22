@@ -3,6 +3,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'KCC-Murukmuruk';
+  src: url('/fonts/KCC-Murukmuruk.woff2') format('woff2'),
+       url('/fonts/KCC-Murukmuruk.woff') format('woff'),
+       url('/fonts/KCC-Murukmuruk.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* 페이지 렌더링 지연 방지 */
+}
 
 :root {
   --background: #ffffff;
@@ -74,7 +83,7 @@ header {
   white-space: nowrap; /* 줄바꿈 금지 */
   font-family: 'KCC-Murukmuruk', sans-serif;
   /* 기존 스타일 유지 */
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 700;
   color: #74B9FF;
   letter-spacing: 2px;
@@ -90,6 +99,18 @@ header {
   font-family: 맑은고딕;
 
 }
+
+
+/* 작은 글씨 스타일 2*/
+.text-bar {
+  white-space: nowrap; /* 줄바꿈 금지 */
+  font-size: 1.0rem; /* 또는 13px, 14px 등 원하는 크기 */
+  line-height: 1.2;
+  color:#f0f1f1;
+  font-family: 맑은고딕;
+
+}
+
 
 .nav-links {
   white-space: normal; /* 줄바꿈 허용 */

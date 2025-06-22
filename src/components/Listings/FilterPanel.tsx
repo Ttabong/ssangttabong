@@ -57,12 +57,12 @@ export default function FilterPanel({
   return (
 
     
-    <div className="w-full flex flex-wrap items-center font-semibold" style={{ paddingBottom: '0.5rem'}}>
+    <div className="w-full flex flex-wrap items-center text-xl font-semibold gap-4">
   
       {/* 거래 유형 */}
       <div>
         <p className="font-semibold text-yellow-400 h-7" >◈ 거래 유형</p>
-        <div className="flex gap-4">
+        <div className="flex gap-3 text-bar" >
           {['전체', '매매', '전세', '월세'].map((type) => (
             <label key={type} className="inline-flex items-center gap-1 cursor-pointer">
               <input
@@ -75,7 +75,7 @@ export default function FilterPanel({
               {type}
             </label>
           ))}
-          <div className='w-5'></div>
+          <div className='w-1'></div>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export default function FilterPanel({
       {!hideUsage && (
         <div>
           <p className="font-semibold text-yellow-400 h-7">◈ 용도</p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 text-bar">
             {USAGE_TYPES.map((usage) => (
               <label key={usage} className="inline-flex items-center gap-1 cursor-pointer">
                 <input
@@ -103,7 +103,7 @@ export default function FilterPanel({
       {/* 주차 */}
       <div>
         <p className="font-semibold text-yellow-400 h-7">◈ 주차 여부</p>
-        <div className="flex gap-3">
+        <div className="flex gap-1 text-bar">
           <label className="inline-flex items-center gap-1 cursor-pointer">
             <input
               type="radio"
@@ -123,17 +123,18 @@ export default function FilterPanel({
                 onChange={() => onParkingChange([option])}
                 className="accent-sky-400"
               />
-              {option === 'O' ? '주차 가능' : '주차 불가'}
+              {option === 'O' ? '가능' : '불가'}
             </label>
           ))}
-          <div className='w-5'></div>
         </div>
       </div> 
+
+            <div className='w-1'></div>
 
       {/* 애완동물 */}
       <div>
         <p className="font-semibold text-yellow-400 h-7">◈ 애완동물</p>
-        <div className="flex gap-3">
+        <div className="flex gap-3 text-bar">
           <label className="inline-flex items-center gap-1 cursor-pointer">
             <input
               type="radio"
@@ -159,7 +160,7 @@ export default function FilterPanel({
         </div>
       </div>
 
-      <div className="w-full space-y-6">
+<div className="w-full space-y-6">
   {/* 매매 */}
   {selectedTradeType === '매매' && (
     <div className="w-full">
@@ -278,9 +279,11 @@ export default function FilterPanel({
       </div>
     </>
   )}
+
+          <hr className="border-t border-orange-400 my-8" />
 </div>
 
-        <hr className="border-t border-orange-400 my-8" />
+
 
     </div>
 

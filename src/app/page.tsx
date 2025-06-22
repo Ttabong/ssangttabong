@@ -8,7 +8,7 @@ export default function Home() {
     <>
       <p className="h-10 overflow-hidden"></p>
 
-      <main className="w-full mx-auto px-4 py-10">
+      <main className="w-full mx-auto px-4 py-10 px-10">
         <section className="hero text-center mb-12">
           <h2 className="text-2xl font-bold mb-2">신뢰와 친절로 만족을 약속합니다</h2>
           <p className="mb-4 text-lg">어떤 물건을 찾고 계신가요?</p>
@@ -16,7 +16,7 @@ export default function Home() {
         </section>
 
         <section id="products" className="products-section">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
             {[
               { title: "원 / 투룸", image: "/images/apart.jpg", href: "/listings/onetwo" },
               { title: "아파트", image: "/images/apart.jpg", href: "/listings/apart" },
@@ -26,11 +26,11 @@ export default function Home() {
               { title: "건물 / 토지", image: "/images/shop.jpg", href: "/listings/land" },
             ].map(({ title, image, href }, idx) => (
                <Link key={idx} href={href} className="block group">
-              <article className="product-card bg-white rounded shadow p-4 max-w-[420px] mx-auto">
-                <Image src={image} alt={`${title} 이미지`} width={420} height={300} className="rounded" />
-                <h3 className="text-xl font-semibold mt-4">{title}</h3>
-                <div className="price mt-2 text-gray-700">매매 | 전세 | 월세</div>
-                <span className="btn-secondary mt-4 px-4 py-2 bg-gray-200 rounded cursor-pointer">보러가기</span>
+              <article className="product-card bg-white rounded shadow p-4 w-[250px] ">
+                <Image src={image} alt={`${title} 이미지`} width={320} height={300} className="rounded" />
+                {/* <h3 className="text-xl font-semibold mt-4">{title}</h3> */}
+                {/* <div className="price mt-2 text-gray-700">매매 | 전세 | 월세</div> */}
+                <span className="btn-secondary mt-4 px-4 py-2 bg-gray-200 rounded cursor-pointer font-bold text-white text-l">{title}</span>
               </article>
               </Link>
             ))}
