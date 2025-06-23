@@ -38,16 +38,14 @@ export default function ListingsGrid({ listings, loading }: Props) {
           key={item.id}
           className="relative rounded-md overflow-hidden hover:scale-105 transition-transform bg-blue-50"
         >
-          <Link href={`/listings/${item.id}`}>
-            <Image
-              src={item.image_url_1}
-              alt={item.title}
-              width={320}
-              height={200}
-              className="object-cover w-full h-48 rounded-md"
-              priority={true}
-            />
-          </Link>
+          <Image
+            src={item.image_url_1.trim().replace(/([^:]\/)\/+/g, "$1")}
+            alt={item.title}
+            width={320}
+            height={200}
+            className="object-cover w-full h-48 rounded-md"
+            priority={true}
+          />
 
           <div className="mx-5">
             {/* id_num 표시: 작은 글씨로 타이틀 위에 */}
