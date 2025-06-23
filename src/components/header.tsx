@@ -18,10 +18,10 @@ export default function Header() {
             {/* 오른쪽 텍스트 두 줄 */}
             <Link href="/" className="block w-fit h-fit">
               <div className="flex flex-col justify-between h-full leading-tight">
-                <div className="text-ss">
+                <div className="text-ss text-gray-500">
                   Real Estate Agent
                 </div>
-                <div className="text-small">
+                <div className="filter_a text-small">
                   공인중개사 사무소
                 </div>
               </div>
@@ -32,7 +32,7 @@ export default function Header() {
 <div className="text-l text-red-500 text-bold">  ★ 실제 매물이 아닌 테스트 페이지 입니다. </div>
           
           <nav className="w-full flex justify-end pr-4">
-            <ul className="flex space-x-4 text-sm sm:text-base font-semibold gap-4">
+            <ul className="filter_b flex space-x-4 text-sm sm:text-base font-semibold gap-4">
               <li>
                 <Link href="/">Home</Link>
               </li>

@@ -5,6 +5,7 @@ import supabase from '@/lib/supabaseClient';
 import FilterPanel from './FilterPanel';
 import SearchSortBar from './SearchSortBar';
 import ListingsGrid, { Listing } from './ListingsGrid';
+import { formatKoreanPrice, handleCommaInput } from '@/utils/priceUtils';
 
 type ListingsPageProps = {
   title: string;
@@ -169,8 +170,8 @@ export default function ListingsPage({
     <main className="container mx-auto px-4">
       <div className="h-10" />
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-extrabold text-[#38bdf8] drop-shadow-md">{title}</h1>
-        <p className="text-gray-300 mt-2 text-lg">{description}</p>
+        <h1 className="list_title_a text-4xl font-extrabold drop-shadow-md">{title}</h1>
+        <p className="list_title_b mt-2 text-lg">{description}</p>
       </div>
       <div className="h-10" />
 
@@ -200,7 +201,6 @@ export default function ListingsPage({
         />
       </section>
 
-      <hr className="border-t border-orange-400 my-8" />
       <div className="h-3" />
 
       <section className="w-full flex flex-wrap gap-10">

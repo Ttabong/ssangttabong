@@ -15,7 +15,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Header, Main, Footer 를 동일한 max-w 컨테이너로 감쌉니다 */}
         <Header />
 
-        <main className="flex-1 w-full bg-[#0f172a] ">
+        <main className="flex-1 w-full">
+             
           <div className="">
             {children}
           </div>

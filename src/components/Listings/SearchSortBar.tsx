@@ -30,13 +30,14 @@ export default function SearchSortBar({
         value={searchTerm}
         onChange={onSearchTermChange}
         className="
+          filter_a 
           w-72
           h-11
           text-lg
           placeholder-gray-500
           bg-gray-100
           border-2
-          border-yellow-400
+          border-blue-500
           rounded-lg
           shadow-md
           focus:outline-none
@@ -48,11 +49,11 @@ export default function SearchSortBar({
       />
 
       <div className="flex items-center gap-2 cursor-pointer">
-        <p className="font-semibold text-yellow-400">◈ 정렬</p>
+        <p className="filter_a font-semibold text-xl"></p>
         <select
           value={sortKey}
           onChange={onSortKeyChange}
-          className="bg-gray-700 text-white rounded-md px-3 py-1 mr-2 text-lg"
+          className="filter_a rounded-md px-3 py-1 mr-2 text-lg"
         >
           <option value="name">이름순</option>
           <option value="price">가격순</option>
@@ -62,7 +63,7 @@ export default function SearchSortBar({
         <select
           value={sortOrder}
           onChange={onSortOrderChange}
-          className="bg-gray-700 text-white rounded-md px-3 py-1 text-lg"
+          className="filter_a rounded-md px-3 py-1 text-lg"
         >
           <option value="asc">오름차순</option>
           <option value="desc">내림차순</option>

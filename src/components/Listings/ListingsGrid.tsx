@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { formatKoreanPrice } from '@/utils/priceUtils';
 
 export type Listing = {
   id: string;
@@ -35,7 +36,7 @@ export default function ListingsGrid({ listings, loading }: Props) {
       {listings.map((item) => (
         <div
           key={item.id}
-          className="relative rounded-md overflow-hidden hover:scale-105 transition-transform"
+          className="relative rounded-md overflow-hidden hover:scale-105 transition-transform bg-blue-50"
         >
           <Link href={`/listings/${item.id}`}>
             <Image
@@ -48,7 +49,7 @@ export default function ListingsGrid({ listings, loading }: Props) {
             />
           </Link>
 
-          <div className="p-2">
+          <div className="mx-5">
             {/* id_num 표시: 작은 글씨로 타이틀 위에 */}
             <p className="text-xs text-gray-400 mb-1">no. {item.id_num}</p>
 
@@ -56,7 +57,7 @@ export default function ListingsGrid({ listings, loading }: Props) {
               <h3 className="font-bold text-lg">{item.title}</h3>
             </Link>
 
-            <p className="mt-1 text-yellow-400 font-semibold text-l">
+            <p className="mt-1 text-orange-400 font-semibold text-l">
               {item.type === '매매'
                 ? formatKoreanPrice(item.price)
                 : item.type === '전세'
@@ -67,7 +68,7 @@ export default function ListingsGrid({ listings, loading }: Props) {
             </p>
 
             <div className="flex gap-3 mt-1 text-sm text-gray-500">
-              <span className="text-orange-400 font-semibold"> [ {item.type} ]</span>
+              <span className="filter_a font-semibold"> [ {item.type} ]</span>
               <span>{Array.isArray(item.usage) ? item.usage.join(', ') : item.usage}</span>
               {item.room_count && item.room_count > 0 ? <span>방 {item.room_count}개</span> : null}
               <span>{item.parking ? '주차 가능' : '주차 불가'}</span>
@@ -79,15 +80,4 @@ export default function ListingsGrid({ listings, loading }: Props) {
   );
 }
 
-function formatKoreanPrice(price?: number | null): string {
-  if (!price) return '';
-  if (price >= 100000000) {
-    const eok = Math.floor(price / 100000000);
-    const man = Math.floor((price % 100000000) / 10000);
-    return man > 0 ? `${eok}억 ${man}만` : `${eok}억`;
-  } else if (price >= 10000) {
-    return `${Math.floor(price / 10000)}만`;
-  } else {
-    return price.toString();
-  }
-}
+
