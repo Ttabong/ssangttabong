@@ -5,7 +5,7 @@ import supabase from '@/lib/supabaseClient';
 import FilterPanel from './FilterPanel';
 import SearchSortBar from './SearchSortBar';
 import ListingsGrid, { Listing } from './ListingsGrid';
-import { formatKoreanPrice, handleCommaInput } from '@/utils/priceUtils';
+
 
 type ListingsPageProps = {
   title: string;
