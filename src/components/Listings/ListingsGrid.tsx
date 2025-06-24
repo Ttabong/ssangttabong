@@ -39,7 +39,7 @@ export default function ListingsGrid({ listings, loading }: Props) {
           className="relative rounded-md overflow-hidden hover:scale-105 transition-transform bg-blue-50"
         >
           <Image
-            src={item.image_url_1.trim().replace(/([^:]\/)\/+/g, "$1")}
+            src={new URL(item.image_url_1.trim()).toString()}
             alt={item.title}
             width={320}
             height={200}
