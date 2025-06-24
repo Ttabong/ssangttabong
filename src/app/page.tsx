@@ -26,7 +26,7 @@ export default function Home() {
 
             <p className="mb-6 text-lg">어떤 물건을 찾고 계신가요?</p>
           
-            <br/> <br/> <br/>
+
             <Link href="/listings" className="hero_b btn-primary inline-block">
               전체매물 둘러보기
             </Link>
