@@ -18,7 +18,7 @@ export default function Header() {
             {/* 오른쪽 텍스트 두 줄 */}
             <Link href="/" className="block w-fit h-fit">
               <div className="flex flex-col justify-between h-full leading-tight">
-                <div className="text-ss text-gray-500">
+                <div className=" text-xs text-gray-500">
                   Real Estate Agent
                 </div>
                 <div className="filter_a text-small">
@@ -32,7 +32,7 @@ export default function Header() {
 <div className="text-l text-red-500 text-bold">  ★ 실제 매물이 아닌 테스트 페이지 입니다. </div>
           
           <nav className="w-full flex justify-end pr-4">
-            <ul className="filter_b flex space-x-4 text-sm sm:text-base font-semibold gap-4">
+            <ul className="header-inner flex space-x-4 font-semibold gap-4">
               <li>
                 <Link href="/">Home</Link>
               </li>
@@ -41,6 +41,9 @@ export default function Header() {
               </li>
               <li>
                 <a href="https://www.youtube.com/@ssangttabong" target="_blank" rel="noopener noreferrer">맛집정보</a>
+              </li>
+               <li>
+                <a href="/ing" target="_blank" rel="noopener noreferrer">게시판</a>
               </li>
               <li>
                 <Link href="/about">About.</Link>

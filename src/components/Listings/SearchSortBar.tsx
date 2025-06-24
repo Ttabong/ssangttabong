@@ -30,14 +30,12 @@ export default function SearchSortBar({
         value={searchTerm}
         onChange={onSearchTermChange}
         className="
-          filter_a 
+          search_box
           w-72
           h-11
           text-lg
           placeholder-gray-500
           bg-gray-100
-          border-2
-          border-blue-500
           rounded-lg
           shadow-md
           focus:outline-none

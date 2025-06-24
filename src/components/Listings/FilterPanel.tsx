@@ -28,7 +28,7 @@ type FilterPanelProps = {
   onMaxDepositChange: React.Dispatch<React.SetStateAction<string>>;
   onMinMonthlyChange: React.Dispatch<React.SetStateAction<string>>;
   onMaxMonthlyChange: React.Dispatch<React.SetStateAction<string>>;
-  hideUsage?: boolean; // 용도 선택 UI를 숨기기 위한 선택적 prop
+  hideUsage?: boolean;
 };
 
 export default function FilterPanel({
@@ -52,242 +52,198 @@ export default function FilterPanel({
   onMaxDepositChange,
   onMinMonthlyChange,
   onMaxMonthlyChange,
-  hideUsage = false,  // 기본값 지정해도 좋음
+  hideUsage = false,
 }: FilterPanelProps) {
   return (
-
-    
-    <div className="w-full flex flex-wrap items-center text-xl font-semibold gap-4">
-  
-      {/* 거래 유형 */}
-      <div>
-        <p className="filter_a font-semibold h-7"  >◈ 거래 유형</p>
-        <div className="filter_b flex gap-3 text-bar" >
-          {['전체', '매매', '전세', '월세'].map((type) => (
-            <label key={type} className="inline-flex items-center gap-1 cursor-pointer">
-              <input
-                type="radio"
-                name="tradeType"
-                checked={selectedTradeType === type || (type === '전체' && selectedTradeType === '')}
-                onChange={() => onTradeTypeChange(type)}
-                className="accent-sky-400"
-              />
-              {type}
-            </label>
-          ))}
-          <div className='w-1'></div>
-        </div>
-      </div>
-
-      {/* 용도 */}
-      {!hideUsage && (
-        <div>
-          <p className="filter_a font-semibold text-yellow-400 h-7">◈ 용도</p>
-          <div className="filter_b flex flex-wrap gap-2 text-bar">
-            {USAGE_TYPES.map((usage) => (
-              <label key={usage} className="inline-flex items-center gap-1 cursor-pointer">
+    <div className="w-full p-4 rounded-md shadow-md space-y-6">
+      <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-10 lg:items-end">
+        {/* 거래 유형 */}
+        <div className="space-y-2">
+          <p className="filter_a text-lg font-bold text-gray-700">◈ 거래 유형</p>
+          <div className="flex flex-wrap gap-4 items-center">
+            {['전체', '매매', '전세', '월세'].map((type) => (
+              <label key={type} className="inline-flex items-center gap-2 cursor-pointer">
                 <input
-                  type="checkbox"
-                  checked={selectedUsageTypes.includes(usage)}
-                  onChange={() => onUsageTypeToggle(usage)}
-                  className="accent-sky-400"
+                  type="radio"
+                  name="tradeType"
+                  checked={selectedTradeType === type || (type === '전체' && selectedTradeType === '')}
+                  onChange={() => onTradeTypeChange(type)}
+                  className="accent-sky-500"
                 />
-                {usage}
+                {type}
               </label>
             ))}
-            <div className='w-10'></div>
           </div>
         </div>
-      )}
 
-      {/* 주차 */}
-      <div>
-        <p className="filter_a font-semibold text-yellow-400 h-7">◈ 주차 여부</p>
-        <div className="filter_b  flex gap-1 text-bar">
-          <label className="inline-flex items-center gap-1 cursor-pointer">
-            <input
-              type="radio"
-              name="parking"
-              checked={selectedParkingOption.length === 0}
-              onChange={() => onParkingChange([])}
-              className="accent-sky-400"
-            />
-            전체
-          </label>
-          {PARKING_OPTIONS.map((option) => (
-            <label key={option} className="inline-flex items-center gap-1 cursor-pointer">
+        {/* 용도 */}
+        {!hideUsage && (
+          <div className="space-y-2">
+            <p className="filter_a text-lg font-bold text-gray-700">◈ 용도</p>
+            <div className="flex flex-wrap gap-4 items-center">
+              {USAGE_TYPES.map((usage) => (
+                <label key={usage} className="inline-flex items-center gap-1 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedUsageTypes.includes(usage)}
+                    onChange={() => onUsageTypeToggle(usage)}
+                    className="accent-sky-500"
+                  />
+                  {usage}
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 주차 여부 */}
+        <div className="space-y-2">
+          <p className="filter_a text-lg font-bold text-gray-700">◈ 주차 여부</p>
+          <div className="flex gap-4 items-center">
+            <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
                 name="parking"
-                checked={selectedParkingOption[0] === option}
-                onChange={() => onParkingChange([option])}
-                className="accent-sky-400"
+                checked={selectedParkingOption.length === 0}
+                onChange={() => onParkingChange([])}
+                className="accent-sky-500"
               />
-              {option === 'O' ? '가능' : '불가'}
+              전체
             </label>
-          ))}
+            {PARKING_OPTIONS.map((option) => (
+              <label key={option} className="inline-flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="parking"
+                  checked={selectedParkingOption[0] === option}
+                  onChange={() => onParkingChange([option])}
+                  className="accent-sky-500"
+                />
+                {option === 'O' ? '가능' : '불가'}
+              </label>
+            ))}
+          </div>
         </div>
-      </div> 
 
-            <div className='w-1'></div>
-
-      {/* 애완동물 */}
-      <div>
-        <p className="filter_a font-semibold text-yellow-400 h-7">◈ 애완동물</p>
-        <div className="filter_b flex gap-3 text-bar">
-          <label className="inline-flex items-center gap-1 cursor-pointer">
-            <input
-              type="radio"
-              name="pet"
-              checked={selectedPetAllowedOption.length === 0}
-              onChange={() => onPetAllowedChange([])}
-              className="accent-sky-400"
-            />
-            전체
-          </label>
-          {PET_ALLOWED_OPTIONS.map((option) => (
-            <label key={option} className="inline-flex items-center gap-1 cursor-pointer">
+        {/* 애완동물 */}
+        <div className="space-y-2">
+          <p className="filter_a text-lg font-bold text-gray-700">◈ 애완동물</p>
+          <div className="flex gap-4 items-center">
+            <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
                 name="pet"
-                checked={selectedPetAllowedOption[0] === option}
-                onChange={() => onPetAllowedChange([option])}
-                className="accent-sky-400"
+                checked={selectedPetAllowedOption.length === 0}
+                onChange={() => onPetAllowedChange([])}
+                className="accent-sky-500"
               />
-              {option === 'O' ? '가능' : '불가'}
+              전체
             </label>
-          ))}
+            {PET_ALLOWED_OPTIONS.map((option) => (
+              <label key={option} className="inline-flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="pet"
+                  checked={selectedPetAllowedOption[0] === option}
+                  onChange={() => onPetAllowedChange([option])}
+                  className="accent-sky-500"
+                />
+                {option === 'O' ? '가능' : '불가'}
+              </label>
+            ))}
+          </div>
         </div>
       </div>
+            
+      <hr className="border-t border-gray-300 my-4" />     
 
-<div className="w-full space-y-6">
-  {/* 매매 */}
-  {selectedTradeType === '매매' && (
-    <div className="w-full">
-      <p className="font-semibold text-yellow-400 mb-2">◈ 가격 범위</p>
-      <div className="flex flex-wrap items-start gap-4">
-        <div className="flex flex-col">
-          <input
-            type="text"
-            placeholder="최소 가격"
-            value={minPriceStr}
-            onChange={(e) => handleCommaInput(e, onMinPriceChange)}
-            className="p-2 border rounded w-36"
+      {/* 거래 유형별 가격 필터 */}
+      {selectedTradeType === '매매' && (
+        <PriceRange
+          label="가격 범위"
+          minValue={minPriceStr}
+          maxValue={maxPriceStr}
+          onMinChange={onMinPriceChange}
+          onMaxChange={onMaxPriceChange}
+        />
+      )}
+      {selectedTradeType === '전세' && (
+        <PriceRange
+          label="보증금 범위"
+          minValue={minDepositStr}
+          maxValue={maxDepositStr}
+          onMinChange={onMinDepositChange}
+          onMaxChange={onMaxDepositChange}
+        />
+      )}
+      {selectedTradeType === '월세' && (
+        <>
+          <PriceRange
+            label="보증금 범위"
+            minValue={minDepositStr}
+            maxValue={maxDepositStr}
+            onMinChange={onMinDepositChange}
+            onMaxChange={onMaxDepositChange}
           />
-          <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(minPriceStr)}</div>
-        </div>
-        <span className="self-center font-bold">~</span>
-        <div className="flex flex-col">
-          <input
-            type="text"
-            placeholder="최대 가격"
-            value={maxPriceStr}
-            onChange={(e) => handleCommaInput(e, onMaxPriceChange)}
-            className="p-2 border rounded w-36"
+          <PriceRange
+            label="월차임 범위"
+            minValue={minMonthlyStr}
+            maxValue={maxMonthlyStr}
+            onMinChange={onMinMonthlyChange}
+            onMaxChange={onMaxMonthlyChange}
           />
-          <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(maxPriceStr)}</div>
-        </div>
-      </div>
+        </>
+      )}
+
+ 
     </div>
-  )}
+  );
+}
 
-  {/* 전세 */}
-  {selectedTradeType === '전세' && (
-    <div className="w-full">
-      <p className="font-semibold text-yellow-400 mb-2">◈ 보증금 범위</p>
-      <div className="flex flex-wrap items-start gap-4">
-        <div className="flex flex-col">
-          <input
-            type="text"
-            placeholder="최소 보증금"
-            value={minDepositStr}
-            onChange={(e) => handleCommaInput(e, onMinDepositChange)}
-            className="p-2 border rounded w-36"
-          />
-          <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(minDepositStr)}</div>
-        </div>
-        <span className="self-center font-bold">~</span>
-        <div className="flex flex-col">
-          <input
-            type="text"
-            placeholder="최대 보증금"
-            value={maxDepositStr}
-            onChange={(e) => handleCommaInput(e, onMaxDepositChange)}
-            className="p-2 border rounded w-36"
-          />
-          <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(maxDepositStr)}</div>
-        </div>
-      </div>
-    </div>
-  )}
+function PriceRange({
+  label,
+  minValue,
+  maxValue,
+  onMinChange,
+  onMaxChange,
+}: {
+  label: string;
+  minValue: string;
+  maxValue: string;
+  onMinChange: React.Dispatch<React.SetStateAction<string>>;
+  onMaxChange: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  return (
 
-  {/* 월세 */}
-  {selectedTradeType === '월세' && (
-    <>
-      <div className="w-full">
-        <p className="font-semibold text-yellow-400 mb-2">◈ 보증금 범위</p>
-        <div className="flex flex-wrap items-start gap-4">
-          <div className="flex flex-col">
-            <input
-              type="text"
-              placeholder="최소 보증금"
-              value={minDepositStr}
-              onChange={(e) => handleCommaInput(e, onMinDepositChange)}
-              className="p-2 border rounded w-36"
-            />
-            <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(minDepositStr)}</div>
+      <div>
+        <div className='h-3'></div>
+        <div className="space-y-2">
+          <p className="text-lg font-bold text-gray-500">◈ {label}</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-4">
+            <div className="flex flex-col space-y-1">
+              <input
+                type="text"
+                placeholder={`  최소 ${label}`}
+                value={minValue}
+                onChange={(e) => handleCommaInput(e, onMinChange)}
+                className="p-2 border border-gray-300 rounded-md w-40 text-base"
+              />
+              <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(minValue)}</div>
+            </div>
+            <span className="font-bold text-xl">~</span>
+            <div className="flex flex-col space-y-1">
+              <input
+                type="text"
+                placeholder={`  최대 ${label}`}
+                value={maxValue}
+                onChange={(e) => handleCommaInput(e, onMaxChange)}
+                className="p-2 border border-gray-300 rounded-md w-40 text-base"
+              />
+              <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(maxValue)}</div>
+            </div>
           </div>
-          <span className="self-center font-bold">~</span>
-          <div className="flex flex-col">
-            <input
-              type="text"
-              placeholder="최대 보증금"
-              value={maxDepositStr}
-              onChange={(e) => handleCommaInput(e, onMaxDepositChange)}
-              className="p-2 border rounded w-36"
-            />
-            <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(maxDepositStr)}</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full">
-        <p className="font-semibold text-yellow-400 mb-2">◈ 월차임 범위</p>
-        <div className="flex flex-wrap items-start gap-4">
-          <div className="flex flex-col">
-            <input
-              type="text"
-              placeholder="최소 월세"
-              value={minMonthlyStr}
-              onChange={(e) => handleCommaInput(e, onMinMonthlyChange)}
-              className="p-2 border rounded w-36"
-            />
-            <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(minMonthlyStr)}</div>
-          </div>
-          <span className="self-center font-bold">~</span>
-          <div className="flex flex-col">
-            <input
-              type="text"
-              placeholder="최대 월세"
-              value={maxMonthlyStr}
-              onChange={(e) => handleCommaInput(e, onMaxMonthlyChange)}
-              className="p-2 border rounded w-36"
-            />
-            <div className="text-sm text-gray-500 min-h-[1.25rem]">{formatKoreanPrice(maxMonthlyStr)}</div>
-          </div>
-        </div>
-      </div>
-    </>
-  )}
-
-          <hr className="border-t border-gray-400 my-8" />
-</div>
-
-
+      </div>  
 
     </div>
-
-    
-
   );
 }

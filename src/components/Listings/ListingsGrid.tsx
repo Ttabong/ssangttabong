@@ -33,45 +33,49 @@ export default function ListingsGrid({ listings, loading }: Props) {
   return (
 
     <section className="w-full grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+            
       {listings.map((item) => (
         <div
           key={item.id}
-          className="relative rounded-md overflow-hidden hover:scale-105 transition-transform bg-blue-50"
+          className="listing-card relative rounded-md overflow-hidden hover:scale-105 transition-transform bg-blue-50 shadow-md"
         >
           <Image
             src={new URL(item.image_url_1.trim()).toString()}
             alt={item.title}
             width={320}
-            height={200}
-            className="object-cover w-full h-48 rounded-md"
+            height={300}
+            className="object-cover w-full h-55 rounded-t-md"
             priority={true}
           />
+          <div>      
+            <div className='h-2'></div>
+            <div className="space-y-2 leading-relaxed">
+              {/* id_num 표시: 작은 글씨로 타이틀 위에 */}
+              <p className="text-xs text-gray-400 mb-1">&nbsp;&nbsp; [ no. {item.id_num} ]</p>
 
-          <div className="mx-5">
-            {/* id_num 표시: 작은 글씨로 타이틀 위에 */}
-            <p className="text-xs text-gray-400 mb-1">no. {item.id_num}</p>
+              <Link href={`/listings/${item.id}`}>
+                <h3 className="font-bold text-xl">&nbsp;&nbsp; {item.title}</h3>
+              </Link>
 
-            <Link href={`/listings/${item.id}`}>
-              <h3 className="font-bold text-lg">{item.title}</h3>
-            </Link>
+              <p className="mt-1 text-orange-400 font-semibold text-l">&nbsp;&nbsp;&nbsp;&nbsp;
+                {item.type === '매매'
+                  ? formatKoreanPrice(item.price)
+                  : item.type === '전세'
+                  ? formatKoreanPrice(item.deposit)
+                  : item.type === '월세'
+                  ? `${formatKoreanPrice(item.deposit)} / ${formatKoreanPrice(item.monthly)}`
+                  : '-'}
+              </p>
 
-            <p className="mt-1 text-orange-400 font-semibold text-l">
-              {item.type === '매매'
-                ? formatKoreanPrice(item.price)
-                : item.type === '전세'
-                ? formatKoreanPrice(item.deposit)
-                : item.type === '월세'
-                ? `${formatKoreanPrice(item.deposit)} / ${formatKoreanPrice(item.monthly)}`
-                : '-'}
-            </p>
-
-            <div className="flex gap-3 mt-1 text-sm text-gray-500">
-              <span className="filter_a font-semibold"> [ {item.type} ]</span>
-              <span>{Array.isArray(item.usage) ? item.usage.join(', ') : item.usage}</span>
-              {item.room_count && item.room_count > 0 ? <span>방 {item.room_count}개</span> : null}
-              <span>{item.parking ? '주차 가능' : '주차 불가'}</span>
+              <div className="flex gap-3 mt-1 text-sm text-gray-500">&nbsp;
+                <span className="filter_a font-semibold"> [ {item.type} ]</span>
+                <span>{Array.isArray(item.usage) ? item.usage.join(', ') : item.usage}</span>
+                {item.room_count && item.room_count > 0 ? <span>방 {item.room_count}개</span> : null}
+                <span>{item.parking ? '주차 가능' : '주차 불가'}</span>
+              </div>
+              <div className='h-2'></div>
             </div>
-          </div>
+          </div>  
         </div>
       ))}
     </section>
