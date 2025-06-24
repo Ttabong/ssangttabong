@@ -24,6 +24,7 @@ export default function ListingsPage({
   hideUsage,
   initialListings,
 }: ListingsPageProps) {
+  
   const [listings, setListings] = useState<Listing[]>(initialListings ?? []);
   const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState<'name' | 'price' | 'id_num'>('id_num');
