@@ -4,9 +4,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import supabase from '@/lib/supabaseClient';
 import FilterPanel from './FilterPanel';
 import SearchSortBar from './SearchSortBar';
-import ListingsGrid, { Listing } from './ListingsGrid';
+import ListingsGrid, { Listing } from '@/components/Listings/ListingsGrid'; // 정확한 경로로 수정하세요
+import { getUserRole } from '@/utils/getUserRole';
 
-
+// Props 타입 정의
 type ListingsPageProps = {
   title: string;
   description: string;
@@ -24,18 +25,19 @@ export default function ListingsPage({
   hideUsage,
   initialListings,
 }: ListingsPageProps) {
-  
+  // 상태 관리
   const [listings, setListings] = useState<Listing[]>(initialListings ?? []);
   const [loading, setLoading] = useState(false);
+  const [userRole, setUserRole] = useState<'admin' | 'user' | null>(null);
+
+  // 필터 및 정렬 상태
   const [sortKey, setSortKey] = useState<'name' | 'price' | 'id_num'>('id_num');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTradeType, setSelectedTradeType] = useState('');
   const [selectedUsageTypes, setSelectedUsageTypes] = useState<string[]>([]);
   const [selectedParkingOptions, setSelectedParkingOptions] = useState<string[]>([]);
   const [selectedPetAllowedOptions, setSelectedPetAllowedOptions] = useState<string[]>([]);
-
   const [minPriceStr, setMinPriceStr] = useState('');
   const [maxPriceStr, setMaxPriceStr] = useState('');
   const [minDepositStr, setMinDepositStr] = useState('');
@@ -43,6 +45,7 @@ export default function ListingsPage({
   const [minMonthlyStr, setMinMonthlyStr] = useState('');
   const [maxMonthlyStr, setMaxMonthlyStr] = useState('');
 
+  // 숫자 변환
   const minPrice = Number(minPriceStr.replace(/[^0-9]/g, '')) || 0;
   const maxPrice = Number(maxPriceStr.replace(/[^0-9]/g, '')) || Infinity;
   const minDeposit = Number(minDepositStr.replace(/[^0-9]/g, '')) || 0;
@@ -50,27 +53,35 @@ export default function ListingsPage({
   const minMonthly = Number(minMonthlyStr.replace(/[^0-9]/g, '')) || 0;
   const maxMonthly = Number(maxMonthlyStr.replace(/[^0-9]/g, '')) || Infinity;
 
+  // 관리자 권한 불러오기
+  useEffect(() => {
+    async function fetchRole() {
+      const role = await getUserRole();
+      setUserRole(role);
+    }
+    fetchRole();
+  }, []);
+
+  // 매물 데이터 불러오기
   useEffect(() => {
     if (initialListings && initialListings.length > 0) return;
 
     async function fetchData() {
       setLoading(true);
-      
-    const { data, error } = await supabase.from('listings').select('*');
+      const { data, error } = await supabase.from('listings').select('*');
 
       if (error) {
-        console.error('❌ Supabase fetch error:', error.message);
+        console.error('Supabase fetch error:', error.message);
         setListings([]);
       } else {
         setListings(data as Listing[]);
       }
       setLoading(false);
     }
-
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // `initialListings`가 처음에 한 번만 적용되면 되므로 제거
+  }, [initialListings]);
 
+  // 필터링 및 정렬 (useMemo)
   const filteredListings = useMemo(() => {
     return listings
       .filter((item) => {
@@ -94,8 +105,7 @@ export default function ListingsPage({
           if (!match) return false;
         }
 
-        if (selectedTradeType && selectedTradeType !== '전체' && item.type !== selectedTradeType)
-          return false;
+        if (selectedTradeType && selectedTradeType !== '전체' && item.type !== selectedTradeType) return false;
 
         if (selectedParkingOptions.length > 0) {
           const parkingOk = selectedParkingOptions[0] === 'O';
@@ -107,11 +117,7 @@ export default function ListingsPage({
           if (item.pet_allowed !== petOk) return false;
         }
 
-        if (
-          selectedTradeType === '매매' ||
-          selectedTradeType === '' ||
-          selectedTradeType === '전체'
-        ) {
+        if (selectedTradeType === '매매' || selectedTradeType === '' || selectedTradeType === '전체') {
           if (item.price != null && (item.price < minPrice || item.price > maxPrice)) return false;
         } else if (selectedTradeType === '전세') {
           if (item.deposit != null && (item.deposit < minDeposit || item.deposit > maxDeposit)) return false;
@@ -159,6 +165,7 @@ export default function ListingsPage({
     fixedUsage,
   ]);
 
+  // usage 타입 토글 함수
   function toggleUsageType(usage: string) {
     if (selectedUsageTypes.includes(usage)) {
       setSelectedUsageTypes(selectedUsageTypes.filter((u) => u !== usage));
@@ -214,9 +221,17 @@ export default function ListingsPage({
           onSortOrderChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
         />
       </section>
+
       <div className="h-3" />
 
-      <ListingsGrid listings={filteredListings} loading={loading} />
+      {/* ListingsGrid에 상태, 권한, 상태 갱신 함수 모두 전달 */}
+      <ListingsGrid
+        listings={filteredListings}
+        loading={loading}
+        userRole={userRole}
+        setListings={setListings} // 삭제 등 변경 즉시 반영 위해 전달
+      />
+
       <div className="h-8" />
     </main>
   );

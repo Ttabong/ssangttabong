@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <>
-      <main className="w-full">
+      <main className="container_m">
 
         <section
           className="hero text-center relative overflow-hidden"
@@ -24,16 +24,16 @@ export default function Home() {
               &nbsp;만족을 약속합니다
             </h2>
 
-            <p className="mb-6 text-lg">어떤 물건을 찾고 계신가요?</p>
+        {/*    <p className="mb-6 text-lg">어떤 물건을 찾고 계신가요?</p>  */}
           
 
-            <Link href="/listings" className="hero_b btn-primary inline-block">
+            <Link href="/listings" className="hero_b inline-block">
               전체매물 둘러보기
             </Link>
           </div>
         </section>
 
-        <section id="products" className="products-section bg-gray-50 py-12 rounded-xl shadow-inner items-center">
+        <section id="products" className="products-section flex flex-wrap bg-gray-50 py-12 rounded-xl items-center">
           <div className="grid grid-cols-3 gap-3 max-w-screen-xl mx-auto
                           md:grid-cols-6 md:auto-rows-fr">
             {[
@@ -50,7 +50,7 @@ export default function Home() {
                 className="group relative rounded-3xl overflow-hidden bg-white shadow-md hover:shadow-xl transition transform hover:scale-105"
               >
                 <article className="flex flex-col">
-                  <div className="aspect-square overflow-hidden border border-blue-400 rounded-t-3xl">
+                  <div className=" overflow-hidden border border-blue-400 rounded-t-3xl w-full h-30">
                     <Image
                       src={image}
                       alt={`${title} 이미지`}

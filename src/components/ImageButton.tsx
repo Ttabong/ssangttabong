@@ -21,6 +21,7 @@ export default function ImageButton({ src, alt }: ImageButtonProps) {
         width={400}
         height={230}
         className="rounded-md object-cover hover:scale-105 transition-transform duration-200"
+        style={{ objectFit: 'cover' }}
       />
     </button>
   );
