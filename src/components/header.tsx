@@ -7,30 +7,32 @@ import supabase from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 
 export default function Header() {
-  const { user, loading } = useUser();
+  const { user, loading } = useUser(); // 현재 로그인한 사용자 정보 및 로딩 상태
   const router = useRouter();
-  const [loggingOut, setLoggingOut] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false); // 로그아웃 중 상태 관리
 
+  // 로그아웃 처리 함수
   const handleLogout = async () => {
     setLoggingOut(true);
-    await supabase.auth.signOut();
-    router.push('/sign/LoginForm');
+    await supabase.auth.signOut(); // Supabase 로그아웃
+    router.push('/sign/LoginForm'); // 로그아웃 후 로그인 페이지로 이동
     setLoggingOut(false);
   };
 
   return (
     <header>
-      <div className="container header-inner">
+      <div className="container header-inner flex items-center justify-between py-3">
+        {/* 로고 영역 */}
         <div className="flex items-end gap-2">
           <Link href="/" className="block w-fit h-fit">
-            <div className="logo leading-none text-large">
+            <div className="logo leading-none text-large font-bold">
               수 부동산
             </div>
           </Link>
 
           <Link href="/" className="block w-fit h-fit">
             <div className="flex flex-col justify-between h-full leading-tight">
-              <div className=" text-xs text-gray-500">
+              <div className="text-xs text-gray-500">
                 Real Estate Agent
               </div>
               <div className="filter_a text-small">
@@ -40,16 +42,43 @@ export default function Header() {
           </Link>
         </div>
 
+        {/* 네비게이션 바 */}
         <nav className="w-full flex justify-end pr-4">
-          <ul className="header-inner flex space-x-4 font-semibold gap-4">
+          <ul
+            className="
+              header-inner
+              flex
+              flex-nowrap          /* 줄 바꿈 방지해서 메뉴가 한 줄에 유지되도록 */
+              space-x-4
+              gap-4
+              font-semibold
+              text-sm               /* 기본 글자 크기 */
+              sm:text-base          /* 화면이 sm 이상일 땐 기본 크기 */
+              md:text-lg            /* md 이상에서는 글자 크기 좀 더 크게 */
+              overflow-x-auto       /* 메뉴 길면 가로 스크롤 생김 */
+              scrollbar-hide        /* 스크롤바 숨김 (플러그인 또는 스타일 적용 필요) */
+            "
+          >
             <li>
               <Link href="/">Home</Link>
             </li>
             <li>
-              <a href="https://www.gwangjin.go.kr/portal/main/main.do" target="_blank" rel="noopener noreferrer">지역정보</a>
+              <a
+                href="https://www.gwangjin.go.kr/portal/main/main.do"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                지역정보
+              </a>
             </li>
             <li>
-              <a href="https://www.youtube.com/@ssangttabong" target="_blank" rel="noopener noreferrer">맛집정보</a>
+              <a
+                href="https://www.youtube.com/@ssangttabong"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                맛집정보
+              </a>
             </li>
             <li>
               <Link href="/posts">게시판</Link>
@@ -58,36 +87,45 @@ export default function Header() {
               <Link href="/about">About.</Link>
             </li>
 
+            {/* 관리자용 메뉴, admin role일 때만 노출, 빨간색 버튼 스타일 */}
             {user?.role === 'admin' && (
               <li>
-                <Link href="/listings/create" className="text-yellow-600 font-bold">
+                <Link
+                  href="/listings/create"
+                  className="btn-loginR text-center transition"
+                >
                   물건등록
                 </Link>
               </li>
             )}
 
+            {/* 비로그인 상태일 때 로그인 / 회원가입 링크 */}
             {!loading && !user && (
               <>
                 <li>
-                  <Link href="/sign/LoginForm">로그인</Link>
+                 |&nbsp; <Link className='filter_a font-bold' href="/sign/LoginForm">로그인</Link>
                 </li>
                 <li>
-                  <Link href="/sign/SignupForm">회원가입</Link>
+                  <Link className='filter_a font-bold' href="/sign/SignupForm">회원가입</Link>
                 </li>
               </>
             )}
 
+            {/* 로그인 상태일 때 닉네임 및 로그아웃 버튼 표시 - 카드 스타일로 이쁘게 */}
             {!loading && user && (
-              <li className="flex flex-col items-center">
-                {/* 닉네임 표시 */}
-                <span className="filter_a text-sm text-gray-700 mb-1">{user.nickname} 님</span>
-                <button
-                  onClick={handleLogout}
-                  disabled={loggingOut}
-                  className="text-red-600 font-semibold hover:underline"
-                >
-                  {loggingOut ? '로그아웃 중...' : '로그아웃'}
-                </button>
+              <li>
+                <div className="flex flex-col items-center bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 min-w-[100px]">
+                  <span className="filter_a text-sm text-gray-700 font-semibold mb-1 truncate max-w-full text-center">
+                    {user.nickname} 님
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    disabled={loggingOut}
+                    className="bg-red-400 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm w-full"
+                  >
+                    {loggingOut ? '로그아웃 중...' : 'Log-out'}
+                  </button>
+                </div>
               </li>
             )}
           </ul>

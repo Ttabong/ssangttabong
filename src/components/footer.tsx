@@ -2,7 +2,7 @@
 export default function Footer() {
   return (
       <footer>
-        <div className="container footer-inner flex justify-between items-center">
+        <div className="containerF footer-inner flex justify-between items-center">
           <div className="text-left">수부동산공인중개사사무소 <br/>
                 대표 민용기 | 등록번호 11215202300104    <br/>
                 소재지 서울특별시 광진구 자양제3동 583-15 <br/>

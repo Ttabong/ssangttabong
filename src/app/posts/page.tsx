@@ -4,6 +4,14 @@ import React, { useEffect, useState } from 'react';
 import supabase from '@/lib/supabaseClient';
 import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
+import {
+  AiOutlineHeart,
+  AiFillHeart,
+  AiOutlineEye,
+  AiOutlineComment,
+} from 'react-icons/ai';
+import { HiOutlineUser } from 'react-icons/hi2';
+import { FiTrash2 } from 'react-icons/fi';
 
 type Post = {
   id: number;
@@ -11,36 +19,33 @@ type Post = {
   title: string;
   created_at: string;
   image_url: string | null;
-  post_views: { count: number }[];  // ✅ 조회수
-  post_likes: { count: number }[];  // ✅ 좋아요
+  post_views: { count: number }[];
+  post_likes: { count: number }[];
+  post_comments: { count: number }[]; 
 };
 
 const POSTS_PER_PAGE = 12;
 
 export default function PostsList() {
-  const { user, loading: userLoading } = useUser(); // 로그인 정보
+  const { user, loading: userLoading } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [likedPostIds, setLikedPostIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false); // ✅ 관리자 여부 상태
+  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
 
-  // ✅ 관리자 여부 확인
   useEffect(() => {
-    async function checkAdmin() {
-      if (!user) return;
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-      if (!error && data?.role === 'admin') {
-        setIsAdmin(true);
-      }
-    }
-    checkAdmin();
+    if (!user) return;
+    supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+      .then(({ data, error }) => {
+        if (!error && data?.role === 'admin') setIsAdmin(true);
+      });
   }, [user]);
 
-  // ✅ 게시글 + 조회수 + 좋아요 수 조회
   const fetchPosts = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -52,32 +57,91 @@ export default function PostsList() {
         created_at,
         image_url,
         post_views(count),
-        post_likes(count)
+        post_likes(count),
+        post_comments(count) 
       `)
       .order('created_at', { ascending: false })
       .limit(POSTS_PER_PAGE);
 
-    if (error) {
-      alert('게시글 불러오기 실패: ' + error.message);
-    } else {
-      setPosts(data || []);
-    }
+    if (error) alert('게시글 불러오기 실패: ' + error.message);
+    else setPosts(data ?? []);
     setLoading(false);
+  };
+
+  const fetchLikedPosts = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('post_likes')
+      .select('post_id')
+      .eq('user_id', user.id);
+    if (!error && data) setLikedPostIds(data.map((like) => like.post_id));
   };
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+    fetchLikedPosts();
+  }, [user]);
 
-  // ✅ 관리자용 삭제 핸들러
   const handleDelete = async (postId: number) => {
-    if (!confirm("정말로 삭제하시겠습니까?")) return;
-    const { error } = await supabase.from("posts").delete().eq("id", postId);
-    if (error) {
-      alert("삭제 실패: " + error.message);
+    if (!confirm('정말로 삭제하시겠습니까?')) return;
+    const { error } = await supabase.from('posts').delete().eq('id', postId);
+    if (error) alert('삭제 실패: ' + error.message);
+    else {
+      alert('삭제되었습니다.');
+      setPosts((prev) => prev.filter((post) => post.id !== postId));
+    }
+  };
+
+  const handleLikeToggle = async (
+    e: React.MouseEvent,
+    postId: number
+  ) => {
+    e.stopPropagation();
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    const liked = likedPostIds.includes(postId);
+    let success = false;
+
+    if (liked) {
+      const { error } = await supabase
+        .from('post_likes')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('post_id', postId);
+      if (!error) {
+        setLikedPostIds((prev) => prev.filter((id) => id !== postId));
+        success = true;
+      }
     } else {
-      alert("삭제되었습니다.");
-      fetchPosts(); // 목록 갱신
+      const { error } = await supabase.from('post_likes').insert([
+        { user_id: user.id, post_id: postId },
+      ]);
+      if (!error) {
+        setLikedPostIds((prev) => [...prev, postId]);
+        success = true;
+      }
+    }
+
+    if (success) {
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === postId
+            ? {
+                ...p,
+                post_likes: [
+                  {
+                    count:
+                      (p.post_likes?.[0]?.count ?? 0) +
+                      (liked ? -1 : 1),
+                  },
+                ],
+              }
+            : p
+        )
+      );
     }
   };
 
@@ -86,9 +150,8 @@ export default function PostsList() {
 
   return (
     <div className="container max-w-7xl mx-auto p-4">
-      {/* 헤더 + 글쓰기 버튼 (로그인한 사용자만) */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold"> 게시판</h1>
+        <h1 className="filter_a text-3xl font-bold">게시판</h1>
         {user && (
           <button
             onClick={() => router.push('/posts/create')}
@@ -99,74 +162,82 @@ export default function PostsList() {
         )}
       </div>
 
-      <div className='h-10'></div>
+      <div className="h-10"></div>
 
-      {/* 게시글 목록 */}
-      {posts.length === 0 ? (
-        <p className="text-center text-gray-500">게시글이 없습니다.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {posts.map((post) => (
-            <div
-              key={post.id}
-              onClick={() => router.push(`/posts/${post.id}`)}
-              className="cursor-pointer rounded shadow-2xl hover:scale-[1.015] transition-shadow duration-200"
-            >
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            onClick={() => router.push(`/posts/${post.id}`)}
+            className="cBox cursor-pointer rounded shadow-2xl hover:scale-[1.015] transition-all duration-200 bg-white overflow-hidden"
+          >
+            <div className="relative w-full h-64">
               {post.image_url ? (
                 <img
                   src={post.image_url}
                   alt={post.title}
-                  className="w-full h-64 object-cover rounded-t"
+                  className="w-full h-full object-cover rounded-t"
                 />
               ) : (
-                <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded-t text-gray-500">
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-t text-gray-500">
                   이미지 없음
                 </div>
               )}
-              <div className="p-4 bg-white rounded-b">
-                <h2 className="padT filter_a font-bold text-xl truncate">
-                  &nbsp;{post.title}
-                </h2>
 
+              {isAdmin && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(post.id);
+                  }}
+                  className="absolute top-5 right-5 bg-white/80 hover:bg-white text-red-500 rounded-full p-2 shadow-md transition-transform hover:scale-110"
+                >
+                  <FiTrash2 className="text-2xl" />
+                </button>
+              )}
+            </div>
 
+            <div className="p-4 space-y-2">
+              <h2 className="padL padT font-semibold text-lg text-gray-900 truncate">
+                {post.title}
+              </h2>
 
-
-                {/* ✅ 작성자 & 조회수/좋아요를 같은 라인에 배치 */}
-                <div className="flex justify-between items-center mt-2 text-gray-500 text-sm">
-                  {/* 👁 좌측: 조회수/좋아요 */}
-                  <div className="padL padT flex gap-4 text-base">
-                    <span>👁 {post.post_views?.[0]?.count ?? 0}</span>
-                    <span>❤️ {post.post_likes?.[0]?.count ?? 0}</span>
-                  </div>
-
-                  {/* ✏️ 우측: 작성자 */}
-                  <div className="padR text-sm text-gray-600">
-                    작성자: <span className="font-medium">{post.user_nickname || '익명'}</span>
-                  </div>
+              <div className="padL padT flex justify-between items-center text-gray-500 text-sm">
+                <div className="flex gap-4 items-center">
+                  <span className="flex items-center gap-1">
+                    <AiOutlineEye className="text-xl" />
+                    {post.post_views?.[0]?.count ?? 0}
+                  </span>
+                  <button
+                    onClick={(e) => handleLikeToggle(e, post.id)}
+                    className="flex items-center gap-1 text-red-500"
+                  >
+                    {likedPostIds.includes(post.id) ? (
+                      <AiFillHeart className="text-xl" />
+                    ) : (
+                      <AiOutlineHeart className="text-xl" />
+                    )}
+                    {post.post_likes?.[0]?.count ?? 0}
+                  </button>
+                  {/* ✅ 댓글 수 표시 */}
+                  <span className="flex items-center gap-1 text-blue-500">
+                    <AiOutlineComment className="text-xl" />
+                    {post.post_comments?.[0]?.count ?? 0}
+                  </span>
                 </div>
-
-                <p className="padR flex justify-end text-xs text-gray-400">
-                  &nbsp; {new Date(post.created_at).toLocaleDateString()}
-                </p>
-
-                  {/* 👇 관리자만 삭제 버튼 표시 */}
-                  {isAdmin && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // 상위 카드 클릭 방지
-                        handleDelete(post.id);
-                      }}
-                      className="text-red-500 text-3xl hover:scale-150"
-                    >
-                       🗑
-                    </button>
-                  )}
-                </div>
+                <span className="padR flex items-center gap-1 text-gray-600 text-sm">
+                  <HiOutlineUser className=" text-orange-500 text-base" />
+                  {post.user_nickname || '익명'}
+                </span>
               </div>
 
-          ))}
-        </div>
-      )}
+              <p className="padR text-xs text-right text-gray-400">
+                {new Date(post.created_at).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

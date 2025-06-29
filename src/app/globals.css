@@ -63,7 +63,14 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
+}
+
+.containerF {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 1rem;
 }
 
 .container_b {
@@ -106,7 +113,7 @@ body {
 
 header {
   background-color: var(--color-background) !important;
-  padding: 20px 0;
+
   box-shadow: 0 2px 8px rgba(54, 120, 185, 0.15);
   border-bottom: 2px solid var(--color-primary) !important;
 }
@@ -164,6 +171,10 @@ header {
   color: var(--color-gray-dark) !important;
   font-weight: 600;
   font-size: 0.8rem;
+}
+
+.cBox {
+  border: 1px solid #c2d2e2;
 }
 
 .search_box {
@@ -247,8 +258,9 @@ padding: 3px;
 }
 
 .postsDetailR {
-  padding-top: 10px;;
+  padding-top: 10px;
   margin-bottom: 20px;
+  
 }
 
 .postsDetailRp {
@@ -276,6 +288,10 @@ padding: 3px;
 
 .mrBtn {
   margin-right: 25px;
+}
+
+.underB {
+  border-bottom: 1px solid #3678b9;
 }
 
 
@@ -540,13 +556,17 @@ padding: 3px;
   color: var(--color-primary-dark);
 }
 
+.padB {
+  padding-bottom: 3rem;
+}
+
 .gong_b {
   padding-bottom: 0.5rem;
 }
 
 .padR {
   padding-right: 1rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
 }
 
 .padT {
@@ -556,6 +576,23 @@ padding: 3px;
 .padL {
   padding-left: 0.5rem;
 }
+
+.magB {
+  margin-bottom: 0.5rem;
+}
+
+.magBb {
+  margin-bottom: 1rem;
+}
+
+.magTb {
+  margin-top: 1rem;
+}
+
+.pad {
+  padding: 0.5rem;
+}
+
 
 
 .btn-create {

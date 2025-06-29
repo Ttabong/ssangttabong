@@ -37,17 +37,17 @@ export default function Home() {
           <div className="grid grid-cols-3 gap-3 max-w-screen-xl mx-auto
                           md:grid-cols-6 md:auto-rows-fr">
             {[
-              { title: "원 / 투룸", image: "/images/apart.jpg", href: "/listings/onetwo" },
+              { title: "원 / 투룸", image: "/images/broom.jpg", href: "/listings/onetwo" },
               { title: "아파트", image: "/images/apart.jpg", href: "/listings/apart" },
               { title: "주택 / 빌라", image: "/images/house.jpg", href: "/listings/house" },
               { title: "오피스텔", image: "/images/office.jpg", href: "/listings/officetel" },
               { title: "상가 / 사무실", image: "/images/shop.jpg", href: "/listings/shop" },
-              { title: "건물 / 토지", image: "/images/shop.jpg", href: "/listings/land" },
+              { title: "건물 / 토지", image: "/images/land.jpg", href: "/listings/land" },
             ].map(({ title, image, href }, idx) => (
               <Link
                 key={idx}
                 href={href}
-                className="group relative rounded-3xl overflow-hidden bg-white shadow-md hover:shadow-xl transition transform hover:scale-105"
+                className="cBox group relative rounded-3xl overflow-hidden bg-white shadow-2xl hover:shadow-xl transition transform hover:scale-105"
               >
                 <article className="flex flex-col">
                   <div className=" overflow-hidden border border-blue-400 rounded-t-3xl w-full h-30">

@@ -99,7 +99,7 @@ export default function FilterPanel({
         {/* 주차 여부 */}
         <div className="space-y-2">
           <p className="filter_a text-lg font-bold text-gray-700">◈ 주차 여부</p>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-2 items-center">
             <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
@@ -128,7 +128,7 @@ export default function FilterPanel({
         {/* 애완동물 */}
         <div className="space-y-2">
           <p className="filter_a text-lg font-bold text-gray-700">◈ 애완동물</p>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-2 items-center">
             <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"

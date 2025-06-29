@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import supabase from "@/lib/supabaseClient";
 import useUser from "@/hooks/useUser";
 import { useParams, useRouter } from "next/navigation";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import {AiOutlineEye} from "react-icons/ai";
+import { HiOutlineUser } from "react-icons/hi2"; // HeroIcons 유저
+// 또는 FaUser from "react-icons/fa"
 
 // 게시글 타입 정의
 interface Post {
@@ -315,28 +319,45 @@ useEffect(() => {
 
       <div className="h-3"></div>
 
-     
-      <div className="flex gap-6 items-center mb-6 text-gray-600">
-        <button
-          onClick={toggleLike}
-          className={`flex items-center gap-1 ${
-            hasLiked ? "text-red-500" : "text-gray-500 hover:text-red-400"
-          }`}
-          aria-label="좋아요 토글"
-          type="button"
-        >
-          👍 {likesCount} 따봉
-        </button>
-        <div>👁 조회수: {viewCount}</div>
+      <div className="underB"> 
+<div className="flex justify-between items-center mt-4 text-gray-600 text-sm">
+  {/* 좌측: 작성자 */}
+  <div className="flex items-center gap-1">
+    <HiOutlineUser className="text-orange-500 text-lg" />
+    <span>{post.user_nickname || '익명'}</span>
+  </div>
+
+  {/* 우측: 좋아요 + 조회수 */}
+  <div className="flex items-center gap-8 text-gray-500">
+    <button
+      onClick={toggleLike}
+      className={`flex items-center gap-2 text-lg ${
+        hasLiked ? "text-red-600" : "hover:text-red-500"
+      }`}
+      aria-label="좋아요 토글"
+      type="button"
+    >
+
+        {/* 좋아요 수 */}
+      {hasLiked ? <AiFillHeart className="text-red-400 text-2xl" /> : <AiOutlineHeart className="text-red-400 text-2xl" />}
+      <span className="text-xl">{likesCount}</span>
+    </button>
+
+        {/* 댓글 수 */}
+    <div className="filter_a flex items-center gap-1 text-lg">
+      💬 <span>{comments.length}</span>
+    </div>
+
+        {/* 조회수 */}
+    <div className="flex items-center gap-2 text-lg">
+      <AiOutlineEye className="text-2xl" />
+      <span className="text-xl">{viewCount}</span>
+    </div>
+
+  </div>
+</div>
       </div>
 
-      <div className="postsDetail flex justify-between text-sm text-gray-600 mb-4">
-        <p>
-          ✏️ 작성자: <span className="font-medium">{post.user_nickname ?? "익명"}</span>
-        </p>
-        <p>{new Date(post.created_at).toLocaleString()}</p>
-      </div>
-      
 
       {/* 본문내용 */}   
       <div className="postsDetailLetter">
@@ -346,6 +367,7 @@ useEffect(() => {
       </div>
 
       <section className="mb-10">
+
         <ul className="postsDetailR">
           {comments.length === 0 && (
             <li className="text-gray-500 text-sm">댓글이 없습니다.</li>
@@ -378,34 +400,38 @@ useEffect(() => {
           ))}
         </ul>
 
-        <div className="postsDetailRpL border">
-          <div className="postsDetailRpr">
-            <h2 className="filter_a text-lg font-semibold">💬 댓글</h2>
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder=" 댓글을 입력하세요"
-              className="w-full border rounded p-2 mb-2"
-              rows={3}
-              disabled={commentLoading}
-            />
+       
+        <div className="postsDetailRpr">
+          <h2 className="filter_a magB text-lg font-semibold">
+            💬 댓글 <span className="text-blue-500">({comments.length})</span>
+          </h2>
 
-            <button
-              className="btn-loginG"
-              onClick={handleCommentSubmit}
-              disabled={commentLoading}
-              type="button"
-            >
-              {commentLoading ? "작성 중..." : "댓글 작성"}
-            </button>
-          </div>
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder=" 댓글을 입력하세요"
+            className="w-full border rounded p-2 mb-2"
+            rows={3}
+            disabled={commentLoading}
+          />
+
+          <button
+            className="btn-loginG"
+            onClick={handleCommentSubmit}
+            disabled={commentLoading}
+            type="button"
+          >
+            {commentLoading ? "작성 중..." : "댓글 작성"}
+          </button>
         </div>
       </section>
 
+      <div className="h-5"></div>      
+
 
 {(isOwner || isAdmin) && (
-  <div className="flex justify-end gap-4">
-    <button
+  <div className="magT flex justify-end gap-4">
+      <button
       onClick={() => router.push(`/posts/edit/${post.id}`)}
       className="btn-login bg-yellow-400 hover:bg-yellow-500 text-white px-6 py-3 rounded transition"
     >
