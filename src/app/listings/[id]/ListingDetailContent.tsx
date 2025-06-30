@@ -189,14 +189,15 @@ export default async function ListingDetailContent({ id }: ListingDetailContentP
             </section>
 
             {/* 상세 항목 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-base md:text-lg">
-              {details.map(([label, value], i) => (
-                <div key={i} className="flex justify-between items-center rounded-md bg-white/5 border border-gray-200 ">
-                  <span className="proD font-semibold text-s text-gray-500 whitespace-nowrap ">{label}</span>
-                  <span className="proD filter_a text-right text-s text-blue-400 break-words max-w-full">{value}</span>
-                </div>
-              ))}
-            </div>
+            {details.map(([label, value], i) => (
+              <div
+                key={i}
+                className="flex justify-between items-center rounded-md bg-white/5 border border-gray-200 "
+              >
+                <span className="proD font-semibold text-s text-gray-500 whitespace-nowrap ">{label}</span>
+                <span className="proD filter_a text-right text-s text-blue-400 break-words max-w-full">{value}</span>
+              </div>
+            ))}
 
             {/* 관리자 버튼 */}
             <div className="flex justify-end mt-4">

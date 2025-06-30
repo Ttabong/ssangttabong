@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import supabase from "@/lib/supabaseClient";
 import useUser from "@/hooks/useUser";
 import { useParams, useRouter } from "next/navigation";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import {AiOutlineEye} from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart, AiOutlineEye } from "react-icons/ai";
 import { HiOutlineUser } from "react-icons/hi2"; // HeroIcons 유저
-// 또는 FaUser from "react-icons/fa"
+import Image from 'next/image';
 
 // 게시글 타입 정의
 interface Post {
@@ -52,14 +51,14 @@ export default function PostDetailPage() {
 
   const isOwner = user?.id === post?.user_id;
 
-
+  // 게시글 데이터 불러오기 + 조회수 처리
   useEffect(() => {
     if (!postId) return;
 
     async function fetchPostData() {
       setLoadingPost(true);
 
-      // 1) 게시글 상세 정보 조회
+      // 1) 게시글 조회
       const { data: postData, error: postError } = await supabase
         .from("posts")
         .select("*")
@@ -71,35 +70,28 @@ export default function PostDetailPage() {
         router.push("/posts");
         return;
       }
+
       setPost(postData);
 
-      // 2) 조회수 기록 - 로그인 여부와 무관하게 매번 삽입
+      // 2) 조회수 기록
       try {
         let ip = null;
-
-        // 비회원인 경우 IP 추출
         if (!user) {
           const res = await fetch("/api/get-ip");
           const data = await res.json();
           ip = data.ip;
         }
 
-        // 조회수 기록 삽입 (중복 허용)
-        const { error } = await supabase.from("post_views").insert([
+        await supabase.from("post_views").insert([
           {
             post_id: postId,
-            user_id: user?.id ?? null, // 로그인 유저의 ID 또는 null
-            ip_address: ip, // 비회원은 IP 기록, 회원은 null
+            user_id: user?.id ?? null,
+            ip_address: ip,
           },
         ]);
-
-        if (error) {
-          console.error("조회수 기록 실패", error);
-        }
       } catch (e) {
         console.error("조회수 기록 중 오류", e);
       }
-
 
       // 3) 조회수 집계
       const { count: viewsCount } = await supabase
@@ -109,7 +101,7 @@ export default function PostDetailPage() {
 
       setViewCount(viewsCount ?? 0);
 
-      // 4) 좋아요 수 집계
+      // 4) 좋아요 수
       const { count: likeCount } = await supabase
         .from("post_likes")
         .select("*", { count: "exact" })
@@ -117,7 +109,7 @@ export default function PostDetailPage() {
 
       setLikesCount(likeCount ?? 0);
 
-      // 5) 현재 사용자가 좋아요 했는지 여부 조회
+      // 5) 사용자의 좋아요 여부
       if (user) {
         const { data: hasLikeData, error } = await supabase
           .from("post_likes")
@@ -128,9 +120,6 @@ export default function PostDetailPage() {
 
         if (!error) {
           setHasLiked(!!hasLikeData);
-        } else {
-          console.error("좋아요 여부 조회 에러", error);
-          setHasLiked(false);
         }
       }
 
@@ -155,29 +144,30 @@ export default function PostDetailPage() {
         setComments(commentsData);
       }
     }
+
     fetchComments();
   }, [postId]);
 
-// ✅ 관리자 여부 확인 useEffect
-useEffect(() => {
-  async function checkAdmin() {
-    if (!user) return;
+  // 관리자 여부 확인
+  useEffect(() => {
+    async function checkAdmin() {
+      if (!user) return;
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
 
-    if (!error && data?.role === "admin") {
-      setIsAdmin(true);
+      if (!error && data?.role === "admin") {
+        setIsAdmin(true);
+      }
     }
-  }
 
-  checkAdmin();
-}, [user]);
+    checkAdmin();
+  }, [user]);
 
-  // 댓글 작성 핸들러
+  // 댓글 작성
   const handleCommentSubmit = async () => {
     if (!newComment.trim()) {
       alert("댓글 내용을 입력하세요.");
@@ -187,6 +177,7 @@ useEffect(() => {
       alert("로그인이 필요합니다.");
       return;
     }
+
     setCommentLoading(true);
 
     const { error } = await supabase.from("comments").insert([
@@ -199,23 +190,22 @@ useEffect(() => {
       },
     ]);
 
-    if (error) {
-      alert("댓글 작성에 실패했습니다: " + error.message);
-    } else {
+    if (!error) {
       setNewComment("");
-      // 작성 후 댓글 목록 갱신
       const { data: commentsData } = await supabase
         .from("comments")
         .select("*")
         .eq("post_id", postId)
         .order("created_at", { ascending: true });
       setComments(commentsData ?? []);
+    } else {
+      alert("댓글 작성에 실패했습니다: " + error.message);
     }
 
     setCommentLoading(false);
   };
 
-  // 좋아요 토글 함수
+  // 좋아요 토글
   const toggleLike = async () => {
     if (!user) {
       alert("로그인이 필요합니다.");
@@ -253,7 +243,7 @@ useEffect(() => {
     }
   };
 
-  // 댓글 삭제 함수
+  // 댓글 삭제
   const deleteComment = async (commentId: number, commentUserId: string) => {
     if (!user) {
       alert("로그인이 필요합니다.");
@@ -267,10 +257,10 @@ useEffect(() => {
 
     const { error } = await supabase.from("comments").delete().eq("id", commentId);
 
-    if (error) {
-      alert("댓글 삭제 실패: " + error.message);
-    } else {
+    if (!error) {
       setComments((prev) => prev.filter((c) => c.id !== commentId));
+    } else {
+      alert("댓글 삭제 실패: " + error.message);
     }
   };
 
@@ -298,13 +288,15 @@ useEffect(() => {
 
   return (
     <div className="container max-w-3xl bg-white rounded-xl">
+      {/* 🖼 대표 이미지 */}
       <div className="relative w-full aspect-video">
         {post.image_url ? (
-          <img
+          <Image
             src={post.image_url}
             alt={post.title}
             className="absolute inset-0 w-full h-full object-cover rounded-md"
-            loading="lazy"
+            fill
+            priority
           />
         ) : (
           <div className="w-full h-96 bg-gray-200 flex items-center justify-center rounded-md mb-6 text-gray-500 text-lg">
@@ -315,59 +307,59 @@ useEffect(() => {
 
       <div className="h-5"></div>
 
+      {/* 📝 제목 */}
       <h1 className="filter_a text-2xl font-extrabold mb-2">{post.title}</h1>
-
       <div className="h-3"></div>
 
-      <div className="underB"> 
-<div className="flex justify-between items-center mt-4 text-gray-600 text-sm">
-  {/* 좌측: 작성자 */}
-  <div className="flex items-center gap-1">
-    <HiOutlineUser className="text-orange-500 text-lg" />
-    <span>{post.user_nickname || '익명'}</span>
-  </div>
+      {/* 👤 작성자, ❤️ 좋아요, 👁 조회수 */}
+      <div className="underB">
+        <div className="flex justify-between items-center mt-4 text-gray-600 text-sm">
+          <div className="flex items-center gap-1">
+            <HiOutlineUser className="text-orange-500 text-lg" />
+            <span>{post.user_nickname || '익명'}</span>
+          </div>
 
-  {/* 우측: 좋아요 + 조회수 */}
-  <div className="flex items-center gap-8 text-gray-500">
-    <button
-      onClick={toggleLike}
-      className={`flex items-center gap-2 text-lg ${
-        hasLiked ? "text-red-600" : "hover:text-red-500"
-      }`}
-      aria-label="좋아요 토글"
-      type="button"
-    >
+          <div className="flex items-center gap-8 text-gray-500">
+            {/* 좋아요 버튼 */}
+            <button
+              onClick={toggleLike}
+              className={`flex items-center gap-2 text-lg ${
+                hasLiked ? "text-red-600" : "hover:text-red-500"
+              }`}
+              aria-label="좋아요 토글"
+              type="button"
+            >
+              {hasLiked ? (
+                <AiFillHeart className="text-red-400 text-2xl" />
+              ) : (
+                <AiOutlineHeart className="text-red-400 text-2xl" />
+              )}
+              <span className="text-xl">{likesCount}</span>
+            </button>
 
-        {/* 좋아요 수 */}
-      {hasLiked ? <AiFillHeart className="text-red-400 text-2xl" /> : <AiOutlineHeart className="text-red-400 text-2xl" />}
-      <span className="text-xl">{likesCount}</span>
-    </button>
+            {/* 댓글 수 */}
+            <div className="filter_a flex items-center gap-1 text-lg">
+              💬 <span>{comments.length}</span>
+            </div>
 
-        {/* 댓글 수 */}
-    <div className="filter_a flex items-center gap-1 text-lg">
-      💬 <span>{comments.length}</span>
-    </div>
-
-        {/* 조회수 */}
-    <div className="flex items-center gap-2 text-lg">
-      <AiOutlineEye className="text-2xl" />
-      <span className="text-xl">{viewCount}</span>
-    </div>
-
-  </div>
-</div>
+            {/* 조회수 */}
+            <div className="flex items-center gap-2 text-lg">
+              <AiOutlineEye className="text-2xl" />
+              <span className="text-xl">{viewCount}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-
-      {/* 본문내용 */}   
+      {/* 📰 본문 */}
       <div className="postsDetailLetter">
         <article className="whitespace-pre-wrap text-gray-600 leading-relaxed text-lg font-semibold mb-10">
           {post.content}
         </article>
       </div>
 
+      {/* 💬 댓글 목록 */}
       <section className="mb-10">
-
         <ul className="postsDetailR">
           {comments.length === 0 && (
             <li className="text-gray-500 text-sm">댓글이 없습니다.</li>
@@ -384,9 +376,10 @@ useEffect(() => {
                     &nbsp; {new Date(comment.created_at).toLocaleString()}
                   </span>
                 </p>
-                <p className="text-gray-700 whitespace-pre-wrap"> ㄴ {comment.content}</p>
+                <p className="text-gray-700 whitespace-pre-wrap">
+                  ㄴ {comment.content}
+                </p>
               </div>
-
               {user.id === comment.user_id && (
                 <button
                   className="mrBtn text-red-500 text-xl self-start hover:scale-180"
@@ -400,7 +393,7 @@ useEffect(() => {
           ))}
         </ul>
 
-       
+        {/* 댓글 작성 폼 */}
         <div className="postsDetailRpr">
           <h2 className="filter_a magB text-lg font-semibold">
             💬 댓글 <span className="text-blue-500">({comments.length})</span>
@@ -426,34 +419,35 @@ useEffect(() => {
         </div>
       </section>
 
-      <div className="h-5"></div>      
-
-
-{(isOwner || isAdmin) && (
-  <div className="magT flex justify-end gap-4">
-      <button
-      onClick={() => router.push(`/posts/edit/${post.id}`)}
-      className="btn-login bg-yellow-400 hover:bg-yellow-500 text-white px-6 py-3 rounded transition"
-    >
-      수정
-    </button>
-    <button
-      onClick={async () => {
-        if (!confirm("정말로 이 글을 삭제하시겠습니까?")) return;
-        const { error } = await supabase.from("posts").delete().eq("id", post.id);
-        if (error) {
-          alert("삭제 실패: " + error.message);
-        } else {
-          alert("삭제되었습니다.");
-          router.push("/posts");
-        }
-      }}
-      className="btn-loginR bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded transition"
-    >
-      삭제
-    </button>
-  </div>
-)}
+      {/* ✏️ 수정 / 삭제 버튼 (작성자 or 관리자) */}
+      {(isOwner || isAdmin) && (
+        <div className="magT flex justify-end gap-4">
+          <button
+            onClick={() => router.push(`/posts/edit/${post.id}`)}
+            className="btn-login bg-yellow-400 hover:bg-yellow-500 text-white px-6 py-3 rounded transition"
+          >
+            수정
+          </button>
+          <button
+            onClick={async () => {
+              if (!confirm("정말로 이 글을 삭제하시겠습니까?")) return;
+              const { error } = await supabase
+                .from("posts")
+                .delete()
+                .eq("id", post.id);
+              if (!error) {
+                alert("삭제되었습니다.");
+                router.push("/posts");
+              } else {
+                alert("삭제 실패: " + error.message);
+              }
+            }}
+            className="btn-loginR bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded transition"
+          >
+            삭제
+          </button>
+        </div>
+      )}
     </div>
   );
 }

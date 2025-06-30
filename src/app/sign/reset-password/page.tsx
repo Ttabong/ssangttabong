@@ -33,7 +33,8 @@ export default function ResetPasswordPage() {
     setError(null);
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'http://localhost:3000/sign/reset-password/confirm',
+      redirectTo: 'https://ssangttabong.vercel.app/sign/reset-password/confirm',
+
     });
 
     if (error) {

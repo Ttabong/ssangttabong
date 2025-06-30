@@ -5,6 +5,7 @@ import supabase from '@/lib/supabaseClient';
 import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 import { AiOutlineCamera } from "react-icons/ai";
+import Image from 'next/image'; // next/image 임포트
 
 export default function BoardCreatePage() {
   const { user, loading } = useUser();
@@ -65,11 +66,11 @@ export default function BoardCreatePage() {
         return;
       }
 
-      const { data: { publicUrl } } = supabase.storage
+      const { data } = supabase.storage
         .from('post-images')
         .getPublicUrl(fileName);
 
-      imageUrl = publicUrl;
+      imageUrl = data.publicUrl;
       setUploading(false);
     }
 
@@ -100,18 +101,28 @@ export default function BoardCreatePage() {
 
       <form onSubmit={handleSubmit} className="cBox magB bg-white p-6 shadow-2xl rounded-xl">
 
-        {/* ✅ 이미지 업로드 박스 (썸네일 + 아이콘 포함) */}
-        <label className="magB w-full h-64 border-2 border-dashed border-gray-300 rounded-t-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-all overflow-hidden">
+        {/* ✅ 이미지 업로드 박스 (next/image + 아이콘 포함) */}
+        <label className="magB w-full h-64 border-2 border-dashed border-gray-300 rounded-t-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-all overflow-hidden relative">
           {preview ? (
-            <img src={preview} alt="preview" className="object-cover w-full h-full" />
+            <Image 
+              src={preview} 
+              alt="preview" 
+              fill 
+              style={{ objectFit: 'cover' }} 
+              sizes="100vw" 
+              priority={false} 
+              className="rounded-t"
+            />
           ) : (
-            <div className="flex flex-col items-center text-gray-500">
+            <div className="flex flex-col items-center text-gray-500 z-10 relative">
               <AiOutlineCamera className="text-4xl mb-2" />
               <p className="text-sm font-medium">사진 업로드</p>
               <p className="text-xs text-gray-400">클릭 또는 드래그하여 추가</p>
             </div>
           )}
           <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+          {/* 빈 태그 요청에 따라 유지 */}
+          <></>
         </label>  
 
         {/* 제목 입력란 */}
@@ -147,7 +158,5 @@ export default function BoardCreatePage() {
      
       </form>
     </div>
-
-    
   );
 }
