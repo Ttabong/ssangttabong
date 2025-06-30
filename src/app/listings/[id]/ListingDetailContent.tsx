@@ -94,18 +94,15 @@ export default async function ListingDetailContent({ id }: ListingDetailContentP
     ['층수 / 총층수', `${data.floor ?? '-'}층 / ${data.total_floors ?? data.total_floor ?? '-'}층`],
     ['방향', `${data.direction ?? '-'}${data.direction_base ? ` (${data.direction_base}기준)` : ''}`],
     ['방 수 / 욕실 수', `${data.room_count ?? '-'}개 / ${data.bathrooms ?? '-'}개`],
-
     [
-    '주차',
-    <>
-      <span>{data.parking ? '가능' : '불가'}</span><br />
-      <span className="pl-6">
-        세대 당 ({data.parking_count ?? 0}대) / 총 ({data.all_parking ?? 0}대)
-      </span>
-    </>
+      '주차',
+      <>
+        <span>{data.parking ? '가능' : '불가'}</span><br />
+        <span className="pl-6">
+          세대 당 ({data.parking_count ?? 0}대) / 총 ({data.all_parking ?? 0}대)
+        </span>
+      </>
     ],
-
-    
     ['총 세대수', data.households ?? '-'],
     ['애완동물', data.pet_allowed ? '가능' : '불가'],
     [
@@ -203,7 +200,6 @@ export default async function ListingDetailContent({ id }: ListingDetailContentP
             <div className="flex justify-end mt-4">
               <AdminControls listingId={id} />
             </div>
-            
           </div>
         </div>
       </div>
