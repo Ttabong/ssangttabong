@@ -55,7 +55,6 @@ export default function ListingFormUI({
   setPriceRaw,
   setDepositRaw,
   setMonthlyRaw,
-  setLoanAmountRaw,
   handleChange,
   handleAddImages,
   handleRemoveImage,
