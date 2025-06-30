@@ -8,7 +8,7 @@ import CheckboxInput from './Inputs/CheckboxInput';
 import LocationSelector from './LocationSelector';
 import ImageUploader from './ImageUploader';
 import { ListingFormState } from '@/types/listing';
-
+import Image from 'next/image';
 import { formatKoreanPrice, handleCommaInput } from '@/utils/priceUtils';
 
 const usageOptions = [
@@ -36,7 +36,7 @@ type ListingFormUIProps = {
   setPriceRaw: React.Dispatch<React.SetStateAction<string>>;
   setDepositRaw: React.Dispatch<React.SetStateAction<string>>;
   setMonthlyRaw: React.Dispatch<React.SetStateAction<string>>;
-  setLoanAmountRaw: React.Dispatch<React.SetStateAction<string>>;
+ // setLoanAmountRaw: React.Dispatch<React.SetStateAction<string>>;
   handleChange: <K extends keyof ListingFormState>(key: K, value: ListingFormState[K]) => void;
   handleAddImages: (url: string) => void;
   handleRemoveImage: (index: number) => void;
@@ -52,7 +52,7 @@ export default function ListingFormUI({
   depositRaw,
   monthlyRaw,
   loanAmountRaw,
-  setLoanAmountRaw,
+ // setLoanAmountRaw,
   setPriceRaw,
   setDepositRaw,
   setMonthlyRaw,
@@ -462,7 +462,7 @@ export default function ListingFormUI({
             label="융자금"
             value={loanAmountRaw}
             onChange={(e) => {
-              setLoanAmountRaw(e.target.value);
+        //      setLoanAmountRaw(e.target.value);
               onLoanAmountChange(e.target.value);
             }}
             placeholder="0"
@@ -612,10 +612,12 @@ export default function ListingFormUI({
                 key={index}
                 className="relative w-24 h-24 border rounded overflow-hidden"
               >
-                <img
+                <Image
                   src={url}
                   alt={`uploaded-${index}`}
-                  className="object-cover w-full h-full"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  sizes="96px" // 24 * 4 (tailwind w-24 = 6rem = 96px)
                 />
                 <button
                   type="button"

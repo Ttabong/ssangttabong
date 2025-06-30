@@ -15,7 +15,7 @@ export default function ImageUploader({ onUpload }: Props) {
     if (!e.target.files || e.target.files.length === 0) return;
 
     const file = e.target.files[0];
-    const fileExt = file.name.split('.').pop();
+    const fileExt = file.name.split('.').pop() ?? 'jpg';
     const fileName = `${Math.random().toString(36).slice(2)}.${fileExt}`;
     const filePath = fileName;
 
@@ -29,11 +29,12 @@ export default function ImageUploader({ onUpload }: Props) {
 
       if (error) throw error;
 
-      const { data: publicUrlData } = supabase.storage
+      const publicUrlResponse = supabase.storage
         .from('listing-images')
         .getPublicUrl(filePath);
 
-      const publicUrl = publicUrlData.publicUrl;
+      const publicUrl = publicUrlResponse.data?.publicUrl;
+
       if (!publicUrl) throw new Error('URL 생성 실패');
 
       onUpload(publicUrl);
