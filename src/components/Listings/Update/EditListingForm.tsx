@@ -96,11 +96,14 @@ export default function ListingEditForm({ listingId }: Props) {
   // --- 빈 문자열 ''은 null로 변환하고, 숫자면 Number 타입으로 변환 ---
   const toNullable = (value: number | '' | string) => value === '' ? null : Number(value);
 
+  /*
   // --- 통화 입력값을 숫자만 추출하고 쉼표 넣어 리턴 ---
+  // 현재 정의는 되어 있지만 사용하지 않으므로 주석 처리했습니다.
   const formatCurrency = (value: string) => {
     const numeric = value.replace(/[^0-9]/g, '');
     return numeric ? Number(numeric).toLocaleString('ko-KR') : '';
   };
+  */
 
   // --- 융자금 입력 핸들러 ---
   // 입력값을 상태에 저장하고, 포맷된 문자열도 별도 상태로 저장
@@ -197,7 +200,7 @@ export default function ListingEditForm({ listingId }: Props) {
       handleRemoveImage={handleRemoveImage}
       handleSubmit={handleSubmit}
       error={error}
-      setLoanAmountRaw={setLoanAmountRaw}
+      setLoanAmountRaw={setLoanAmountRaw} 
       isSubmitting={isSubmitting}
     />
   );
