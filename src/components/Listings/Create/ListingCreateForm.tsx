@@ -207,7 +207,8 @@ export default function ListingCreateForm() {
       setDepositRaw={setDepositRaw}
       monthlyRaw={monthlyRaw}
       setMonthlyRaw={setMonthlyRaw}
-      loanAmountRaw={loanAmountRaw}               // 추가: 융자금 원본 문자열
+      loanAmountRaw={loanAmountRaw} 
+      setLoanAmountRaw={setLoanAmountRaw}              // 추가: 융자금 원본 문자열
       loanAmountFormatted={loanAmountFormatted}   // 추가: 포맷된 문자열
       onLoanAmountChange={handleLoanAmountChange} // 추가: 변경 핸들러
       handleChange={handleChange}
@@ -215,7 +216,6 @@ export default function ListingCreateForm() {
       handleRemoveImage={handleRemoveImage}
       handleSubmit={handleSubmit}
       error={error}
-       setLoanAmountRaw={setLoanAmountRaw}
       isSubmitting={isSubmitting}
     />
   );

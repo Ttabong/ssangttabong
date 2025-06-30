@@ -132,18 +132,10 @@ export default function EditPostPage() {
           className="magB w-full h-64 border-2 border-dashed border-gray-300 rounded-t-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-all overflow-hidden relative"
         >
           {previewUrl ? (
-            // Blob URL 미리보기용은 next/image 대신 <img> 유지 (Blob URL은 next/image가 안됨)
-            <>
-              <img
-                src={previewUrl}
-                alt="미리보기 이미지"
-                className="object-cover w-full h-full"
-              />
-              {/* 빈 태그 유지 요청에 따라 추가 */}
-              <></>
-            </>
+            // ✅ previewUrl은 Blob이라 <Image>가 지원하지 않음 → <img> 유지
+            <img src={previewUrl} alt="미리보기" className="w-full h-full object-cover rounded-t-lg" />
           ) : currentImageUrl ? (
-            // 기존 서버 이미지는 next/image 사용 (fill 사용시 부모 relative, 높이 필수)
+            // ✅ 공개 URL은 <Image fill /> 사용 (부모가 relative 클래스 포함되어야 함)
             <Image
               src={currentImageUrl}
               alt="현재 이미지"

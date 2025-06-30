@@ -23,7 +23,7 @@ export default function ImageUploader({ onUpload }: Props) {
     setErrorMsg(null);
 
     try {
-      const { data: _data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from('listing-images')
         .upload(filePath, file, { upsert: false });
 

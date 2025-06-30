@@ -52,6 +52,7 @@ export default function ListingFormUI({
   depositRaw,
   monthlyRaw,
   loanAmountRaw,
+  setLoanAmountRaw,
   setPriceRaw,
   setDepositRaw,
   setMonthlyRaw,
@@ -461,13 +462,14 @@ export default function ListingFormUI({
             label="융자금"
             value={loanAmountRaw}
             onChange={(e) => {
+              setLoanAmountRaw(e.target.value);
               onLoanAmountChange(e.target.value);
             }}
             placeholder="0"
           />
           {form.loan_amount === 0 ? (
             <p className="text-sm text-gray-500 mt-1">융자금 없음</p>
-          ) : form.loan_amount === '' || form.loan_amount === null || form.loan_amount === undefined ? (
+          ) : form.loan_amount === '' || form.loan_amount == null ? (
             <p className="text-sm text-gray-400 mt-1">표시하지 않음</p>
           ) : (
             <p className="text-sm text-gray-500 mt-1">{formatKoreanPrice(form.loan_amount)} 원</p>

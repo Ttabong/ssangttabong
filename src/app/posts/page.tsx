@@ -13,6 +13,7 @@ import {
 } from 'react-icons/ai';
 import { HiOutlineUser } from 'react-icons/hi2';
 import { FiTrash2 } from 'react-icons/fi';
+import { useCallback } from 'react';
 
 type Post = {
   id: number;
@@ -72,19 +73,19 @@ export default function PostsList() {
   };
 
   // 내가 좋아요 누른 게시글 목록 불러오기
-  const fetchLikedPosts = async () => {
-    if (!user) return;
-    const { data, error } = await supabase
-      .from('post_likes')
-      .select('post_id')
-      .eq('user_id', user.id);
-    if (!error && data) setLikedPostIds(data.map((like) => like.post_id));
-  };
+    const fetchLikedPosts = useCallback(async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('post_likes')
+        .select('post_id')
+        .eq('user_id', user.id);
+      if (!error && data) setLikedPostIds(data.map((like) => like.post_id));
+    }, [user]);
 
-  useEffect(() => {
-    fetchPosts();
-    fetchLikedPosts();
-  }, [user]);
+    useEffect(() => {
+      fetchPosts();
+      fetchLikedPosts();
+    }, [user, fetchLikedPosts]);
 
   // 게시글 삭제 함수
   const handleDelete = async (postId: number) => {
