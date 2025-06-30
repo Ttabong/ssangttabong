@@ -86,22 +86,26 @@ export default async function ListingDetailContent({ id }: ListingDetailContentP
     ],
     [
       '면적',
-      <div key="area">
-        {data.area_supply ?? '-'} ㎡ / {data.area_private ?? '-'} ㎡ <br />
-        ({toPyeong(data.area_supply)} 평 / {toPyeong(data.area_private)} 평)
-      </div>
+      <>
+        <div key="area">
+          {data.area_supply ?? '-'} ㎡ / {data.area_private ?? '-'} ㎡ <br />
+          ({toPyeong(data.area_supply)} 평 / {toPyeong(data.area_private)} 평)
+        </div>
+      </>
     ],
     ['층수 / 총층수', `${data.floor ?? '-'}층 / ${data.total_floors ?? data.total_floor ?? '-'}층`],
     ['방향', `${data.direction ?? '-'}${data.direction_base ? ` (${data.direction_base}기준)` : ''}`],
     ['방 수 / 욕실 수', `${data.room_count ?? '-'}개 / ${data.bathrooms ?? '-'}개`],
     [
       '주차',
-      <div key="parking">
-        <span>{data.parking ? '가능' : '불가'}</span><br />
-        <span className="pl-6">
-          세대 당 ({data.parking_count ?? 0}대) / 총 ({data.all_parking ?? 0}대)
-        </span>
-      </div>
+      <>
+        <div key="parking">
+          <span>{data.parking ? '가능' : '불가'}</span><br />
+          <span className="pl-6">
+            세대 당 ({data.parking_count ?? 0}대) / 총 ({data.all_parking ?? 0}대)
+          </span>
+        </div>
+      </>
     ],
     ['총 세대수', data.households ?? '-'],
     ['애완동물', data.pet_allowed ? '가능' : '불가'],
