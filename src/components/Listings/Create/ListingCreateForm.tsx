@@ -56,7 +56,7 @@ export default function ListingCreateForm() {
   const [depositRaw, setDepositRaw] = useState('');
   const [monthlyRaw, setMonthlyRaw] = useState('');
   const [loanAmountRaw, setLoanAmountRaw] = useState(''); // 융자금 원본 입력
-  const [loanAmountFormatted, setLoanAmountFormatted] = useState(''); // 포맷된 문자열
+  // const [loanAmountFormatted, setLoanAmountFormatted] = useState(''); // 포맷된 문자열
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false); // 중복 방지용 상태
 
@@ -85,7 +85,7 @@ export default function ListingCreateForm() {
   // 융자금 입력값 처리 함수
   const handleLoanAmountChange = (input: string) => {
     setLoanAmountRaw(input);
-    setLoanAmountFormatted(formatCurrency(input));
+    //setLoanAmountFormatted(formatCurrency(input));
 
     // form 상태 업데이트 (숫자 또는 빈 문자열)
     const numericValue = input.replace(/[^0-9]/g, '');
@@ -197,7 +197,7 @@ export default function ListingCreateForm() {
     toast.success('매물 등록 완료!');
     setForm(initialFormState);
     setLoanAmountRaw('');
-    setLoanAmountFormatted('');
+    //setLoanAmountFormatted('');
     setIsSubmitting(false);
     router.push('/listings');
   };
