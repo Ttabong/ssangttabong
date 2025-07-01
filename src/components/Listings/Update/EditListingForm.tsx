@@ -193,7 +193,6 @@ export default function ListingEditForm({ listingId }: Props) {
       monthlyRaw={monthlyRaw}
       setMonthlyRaw={setMonthlyRaw}
       loanAmountRaw={loanAmountRaw}
-      loanAmountFormatted={loanAmountFormatted}
       onLoanAmountChange={handleLoanAmountChange}
       handleChange={handleChange}
       handleAddImages={handleAddImages}
