@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import supabase from '@/lib/supabaseClient';
-import ListingFormUI from './ListingFormUI';
-import toast from 'react-hot-toast'; // toast 알림 추가
 import { ListingFormState } from '@/types/listing';
+import ListingFormUI from '@/components/Listings/Create/ListingFormUI';
+import toast from 'react-hot-toast'; // toast 알림 추가
+
 
 const initialFormState: ListingFormState = {
   client: '',
@@ -68,8 +69,11 @@ export default function ListingCreateForm() {
   };
 
   // '' 빈 문자열을 null로 변환, 숫자 타입만 변환
-  const toNullable = (value: number | '' | string) =>
-    value === '' ? null : Number(value);
+  const toNullable = (value: number | '' | string) => {
+    if (value === '') return null;
+    const num = Number(value);
+    return isNaN(num) ? null : num;
+  };
 
   // 3자리마다 쉼표 넣는 함수 (한국 통화 형식)
   const formatCurrency = (value: string) => {
@@ -156,8 +160,8 @@ export default function ListingCreateForm() {
         maintenance_fee: form.maintenance_fee,
         total_floors: toNullable(form.total_floors),
         floor: toNullable(form.floor),
-        area_supply: form.area_supply,
-        area_private: form.area_private,
+        area_supply: toNullable(form.area_supply),
+        area_private: toNullable(form.area_private),
         parking: form.parking,
         pet_allowed: form.pet_allowed,
         direction: form.direction,
@@ -175,7 +179,7 @@ export default function ListingCreateForm() {
         image_url_5: imageUrls[4] ?? null,
         image_url_6: imageUrls[5] ?? null,
         parking_count: toNullable(form.parking_count),
-        approval_date: form.approval_date || null,       
+        approval_date: form.approval_date ? new Date(form.approval_date) : null,       
         direction_base: form.direction_base,
         households: toNullable(form.households),
         all_parking: toNullable(form.all_parking),

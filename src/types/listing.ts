@@ -1,4 +1,7 @@
 // src/types/listing.ts
+
+import React from 'react'; // React 타입 필요
+
 export type ListingFormState = {
   client: string;
   phone: string;
@@ -37,4 +40,24 @@ export type ListingFormState = {
   direction_base: string;  
   households: number | '';       
   all_parking: number | '';     
+};
+
+export type ListingFormUIProps = {
+  form: ListingFormState;
+  priceRaw: string;
+  depositRaw: string;
+  monthlyRaw: string;
+  loanAmountRaw: string;
+  loanAmountFormatted: string;
+  setPriceRaw: React.Dispatch<React.SetStateAction<string>>;
+  setDepositRaw: React.Dispatch<React.SetStateAction<string>>;
+  setMonthlyRaw: React.Dispatch<React.SetStateAction<string>>;
+  setLoanAmountRaw: React.Dispatch<React.SetStateAction<string>>;
+  handleChange: <K extends keyof ListingFormState>(key: K, value: ListingFormState[K]) => void;
+  handleAddImages: (url: string) => void;
+  handleRemoveImage: (index: number) => void;
+  handleSubmit: (e: React.FormEvent) => void;
+  error: string | null;
+  isSubmitting: boolean;
+  onLoanAmountChange: (value: string) => void;
 };

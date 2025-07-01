@@ -7,12 +7,9 @@ import NumberInput from './Inputs/NumberInput';
 import CheckboxInput from './Inputs/CheckboxInput';
 import LocationSelector from './LocationSelector';
 import ImageUploader from './ImageUploader';
-import { ListingFormState } from '@/types/listing';
+import { ListingFormUIProps } from '@/types/listing';
 import Image from 'next/image';
 import { formatKoreanPrice, handleCommaInput } from '@/utils/priceUtils';
-
-
-
 
 const usageOptions = [
   { value: '', label: '선택하세요' },
@@ -26,28 +23,8 @@ const usageOptions = [
   { value: '사무실', label: '사무실' },
   { value: '건물', label: '건물' },
   { value: '토지', label: '토지' },
-  { value: '기타', label: '기타 (직접 입력)' },
+  { value: '기타', label: '기타' },
 ];
-
-export type ListingFormUIProps = {
-  form: ListingFormState;
-  priceRaw: string;
-  depositRaw: string;
-  monthlyRaw: string;
-  loanAmountRaw: string;
-  loanAmountFormatted: string; 
-  setPriceRaw: React.Dispatch<React.SetStateAction<string>>;
-  setDepositRaw: React.Dispatch<React.SetStateAction<string>>;
-  setMonthlyRaw: React.Dispatch<React.SetStateAction<string>>;
-  setLoanAmountRaw: React.Dispatch<React.SetStateAction<string>>;
-  handleChange: <K extends keyof ListingFormState>(key: K, value: ListingFormState[K]) => void;
-  handleAddImages: (url: string) => void;
-  handleRemoveImage: (index: number) => void;
-  handleSubmit: (e: React.FormEvent) => void;
-  error: string | null;
-  isSubmitting: boolean;
-  onLoanAmountChange: (value: string) => void;
-};
 
     export default function ListingFormUI({
         form,
@@ -124,7 +101,7 @@ export type ListingFormUIProps = {
             onChange={(e) => handleChange('usage', e.target.value)}
             options={usageOptions}
           />
-          {form.usage === '기타 (직접 입력)' && (
+          {form.usage === '기타' && (
             <TextInput
               id="usage_extra"
               name="usage_extra"
@@ -466,7 +443,7 @@ export type ListingFormUIProps = {
             label="융자금"
             value={loanAmountRaw}
             onChange={(e) => {
-        //      setLoanAmountRaw(e.target.value);
+              setLoanAmountRaw(e.target.value);
               onLoanAmountChange(e.target.value);
             }}
             placeholder="0"
