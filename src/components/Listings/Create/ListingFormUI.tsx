@@ -29,7 +29,7 @@ const usageOptions = [
   { value: '기타', label: '기타 (직접 입력)' },
 ];
 
-type ListingFormUIProps = {
+export type ListingFormUIProps = {
   form: ListingFormState;
   priceRaw: string;
   depositRaw: string;
@@ -39,7 +39,7 @@ type ListingFormUIProps = {
   setPriceRaw: React.Dispatch<React.SetStateAction<string>>;
   setDepositRaw: React.Dispatch<React.SetStateAction<string>>;
   setMonthlyRaw: React.Dispatch<React.SetStateAction<string>>;
-  setLoanAmountRaw: Dispatch<SetStateAction<string>>; 
+  setLoanAmountRaw: React.Dispatch<React.SetStateAction<string>>;
   handleChange: <K extends keyof ListingFormState>(key: K, value: ListingFormState[K]) => void;
   handleAddImages: (url: string) => void;
   handleRemoveImage: (index: number) => void;
@@ -49,25 +49,24 @@ type ListingFormUIProps = {
   onLoanAmountChange: (value: string) => void;
 };
 
-interface Props extends ListingFormUIProps {}
-
 export default function ListingFormUI({
-  form,
-  priceRaw,
-  depositRaw,
-  monthlyRaw,
-  loanAmountRaw,
-  setLoanAmountRaw,
-  setPriceRaw,
-  setDepositRaw,
-  setMonthlyRaw,
-  handleChange,
-  handleAddImages,
-  handleRemoveImage,
-  handleSubmit,
-  error,
-  isSubmitting,
-  onLoanAmountChange,
+    form,
+    priceRaw,
+    depositRaw,
+    monthlyRaw,
+    loanAmountRaw,
+    loanAmountFormatted,
+    setPriceRaw,
+    setDepositRaw,
+    setMonthlyRaw,
+    setLoanAmountRaw,
+    handleChange,
+    handleAddImages,
+    handleRemoveImage,
+    handleSubmit,
+    error,
+    isSubmitting,
+    onLoanAmountChange,
 }: ListingFormUIProps) {
   return (
 
@@ -472,13 +471,13 @@ export default function ListingFormUI({
             }}
             placeholder="0"
           />
-          {form.loan_amount === 0 ? (
-            <p className="text-sm text-gray-500 mt-1">융자금 없음</p>
-          ) : form.loan_amount === '' || form.loan_amount == null ? (
-            <p className="text-sm text-gray-400 mt-1">표시하지 않음</p>
-          ) : (
-            <p className="text-sm text-gray-500 mt-1">{formatKoreanPrice(form.loan_amount)} 원</p>
-          )}
+            {form.loan_amount === 0 ? (
+              <p className="text-sm text-gray-500 mt-1">융자금 없음</p>
+            ) : form.loan_amount === '' || form.loan_amount == null ? (
+              <p className="text-sm text-gray-400 mt-1">표시하지 않음</p>
+            ) : (
+              <p className="text-sm text-gray-500 mt-1">{formatKoreanPrice(form.loan_amount)} 원</p>
+            )}
         </div>
 
         {/* 사용승인일 */}
