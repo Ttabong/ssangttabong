@@ -34,8 +34,9 @@ export default function ListingEditForm({ listingId }: Props) {
   const [depositRaw, setDepositRaw] = useState('');
   const [monthlyRaw, setMonthlyRaw] = useState('');
   const [loanAmountRaw, setLoanAmountRaw] = useState('');
+
   // 융자금 포맷 문자열 (쉼표 포함)
-  const [loanAmountFormatted, setLoanAmountFormatted] = useState('');
+
 
   // 에러 메시지 상태
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +83,7 @@ export default function ListingEditForm({ listingId }: Props) {
       setDepositRaw(data.deposit?.toLocaleString() ?? '');
       setMonthlyRaw(data.monthly?.toLocaleString() ?? '');
       setLoanAmountRaw(data.loan_amount?.toLocaleString() ?? '');
-      setLoanAmountFormatted(formatKoreanPrice(data.loan_amount));
+
     };
     fetchData();
   }, [listingId]);
@@ -107,9 +108,9 @@ export default function ListingEditForm({ listingId }: Props) {
 
   // --- 융자금 입력 핸들러 ---
   // 입력값을 상태에 저장하고, 포맷된 문자열도 별도 상태로 저장
-  const handleLoanAmountChange = (input: string) => {
+    const handleLoanAmountChange = (input: string) => {
     setLoanAmountRaw(input);
-    setLoanAmountFormatted(formatKoreanPrice(input));
+
     const numericValue = input.replace(/[^0-9]/g, '');
     setForm(prev => ({
       ...prev,
