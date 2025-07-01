@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import TextInput from './Inputs/TextInput';
 import SelectInput from './Inputs/SelectInput';
 import NumberInput from './Inputs/NumberInput';
@@ -10,6 +10,9 @@ import ImageUploader from './ImageUploader';
 import { ListingFormState } from '@/types/listing';
 import Image from 'next/image';
 import { formatKoreanPrice, handleCommaInput } from '@/utils/priceUtils';
+
+
+
 
 const usageOptions = [
   { value: '', label: '선택하세요' },
@@ -36,7 +39,7 @@ type ListingFormUIProps = {
   setPriceRaw: React.Dispatch<React.SetStateAction<string>>;
   setDepositRaw: React.Dispatch<React.SetStateAction<string>>;
   setMonthlyRaw: React.Dispatch<React.SetStateAction<string>>;
- // setLoanAmountRaw: React.Dispatch<React.SetStateAction<string>>;
+  setLoanAmountRaw: Dispatch<SetStateAction<string>>; 
   handleChange: <K extends keyof ListingFormState>(key: K, value: ListingFormState[K]) => void;
   handleAddImages: (url: string) => void;
   handleRemoveImage: (index: number) => void;
@@ -46,13 +49,15 @@ type ListingFormUIProps = {
   onLoanAmountChange: (value: string) => void;
 };
 
+interface Props extends ListingFormUIProps {}
+
 export default function ListingFormUI({
   form,
   priceRaw,
   depositRaw,
   monthlyRaw,
   loanAmountRaw,
- // setLoanAmountRaw,
+  setLoanAmountRaw,
   setPriceRaw,
   setDepositRaw,
   setMonthlyRaw,
