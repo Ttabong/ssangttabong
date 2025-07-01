@@ -56,7 +56,7 @@ export default function ListingCreateForm() {
   const [depositRaw, setDepositRaw] = useState('');
   const [monthlyRaw, setMonthlyRaw] = useState('');
   const [loanAmountRaw, setLoanAmountRaw] = useState(''); // 융자금 원본 입력
-  // const [loanAmountFormatted, setLoanAmountFormatted] = useState(''); // 포맷된 문자열
+
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false); // 중복 방지용 상태
 
@@ -75,18 +75,10 @@ export default function ListingCreateForm() {
     return isNaN(num) ? null : num;
   };
 
-  // 3자리마다 쉼표 넣는 함수 (한국 통화 형식)
-  const formatCurrency = (value: string) => {
-    const numericValue = value.replace(/[^0-9]/g, '');
-    if (!numericValue) return '';
-    return Number(numericValue).toLocaleString('ko-KR');
-  };
-
   // 융자금 입력값 처리 함수
   const handleLoanAmountChange = (input: string) => {
     setLoanAmountRaw(input);
-    //setLoanAmountFormatted(formatCurrency(input));
-
+  
     // form 상태 업데이트 (숫자 또는 빈 문자열)
     const numericValue = input.replace(/[^0-9]/g, '');
     setForm(prev => ({
@@ -197,7 +189,6 @@ export default function ListingCreateForm() {
     toast.success('매물 등록 완료!');
     setForm(initialFormState);
     setLoanAmountRaw('');
-    //setLoanAmountFormatted('');
     setIsSubmitting(false);
     router.push('/listings');
   };
@@ -213,7 +204,6 @@ export default function ListingCreateForm() {
       setMonthlyRaw={setMonthlyRaw}
       loanAmountRaw={loanAmountRaw} 
       setLoanAmountRaw={setLoanAmountRaw}              // 추가: 융자금 원본 문자열
-      //loanAmountFormatted={loanAmountFormatted}   // 추가: 포맷된 문자열
       onLoanAmountChange={handleLoanAmountChange} // 추가: 변경 핸들러
       handleChange={handleChange}
       handleAddImages={handleAddImages}
