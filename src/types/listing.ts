@@ -32,10 +32,9 @@ export type ListingFormState = {
   images: string[];
   title: string;
   description: string;
-  parking_count: number | '';         // ✅ 주차 대수
-  approval_date: string;              // ✅ 사용승인일 (예: '2024-03-01')
-  direction_base: string;  // 방향기준
-  households: number | '';       // 총세대수
-  all_parking: number | '';     // 총주차대수
-
+  parking_count: number | '';         
+  approval_date: string;              
+  direction_base: string;  
+  households: number | '';       
+  all_parking: number | '';     
 };

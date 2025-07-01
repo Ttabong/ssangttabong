@@ -49,26 +49,26 @@ export type ListingFormUIProps = {
   onLoanAmountChange: (value: string) => void;
 };
 
-export default function ListingFormUI({
-    form,
-    priceRaw,
-    depositRaw,
-    monthlyRaw,
-    loanAmountRaw,
-    loanAmountFormatted,
-    setPriceRaw,
-    setDepositRaw,
-    setMonthlyRaw,
-    setLoanAmountRaw,
-    handleChange,
-    handleAddImages,
-    handleRemoveImage,
-    handleSubmit,
-    error,
-    isSubmitting,
-    onLoanAmountChange,
-}: ListingFormUIProps) {
-  return (
+    export default function ListingFormUI({
+        form,
+        priceRaw,
+        depositRaw,
+        monthlyRaw,
+        loanAmountRaw,
+        loanAmountFormatted,
+        setPriceRaw,
+        setDepositRaw,
+        setMonthlyRaw,
+        setLoanAmountRaw,
+        handleChange,
+        handleAddImages,
+        handleRemoveImage,
+        handleSubmit,
+        error,
+        isSubmitting,
+        onLoanAmountChange,
+    }: ListingFormUIProps) {
+      return (
 
 
     <form onSubmit={handleSubmit} className="container_c space-y-8 max-w-3xl mx-auto p-4">
@@ -124,7 +124,7 @@ export default function ListingFormUI({
             onChange={(e) => handleChange('usage', e.target.value)}
             options={usageOptions}
           />
-          {form.usage === '기타' && (
+          {form.usage === '기타 (직접 입력)' && (
             <TextInput
               id="usage_extra"
               name="usage_extra"
