@@ -108,6 +108,7 @@ export default async function ListingDetailContent({ id }: ListingDetailContentP
       </>
     ],
     ['총 세대수', data.households ?? '-'],
+    ['사용승인일', data.approval_date ? new Date(data.approval_date).toLocaleDateString('ko-KR') : '-'],
     ['애완동물', data.pet_allowed ? '가능' : '불가'],
     [
       '융자금',
@@ -117,9 +118,10 @@ export default async function ListingDetailContent({ id }: ListingDetailContentP
         ? '융자금 없음'
         : `${formatKoreanPrice(data.loan_amount)} 원`,
     ],
-    ['임대 현황', data.lease_status ?? '-'],
+    
     ['발코니', data.balcony === null || data.balcony === '' ? '해당 없음' : data.balcony],
     ['난방 / 연료', `${data.warmerType ?? '-'} / ${data.warmer ?? '-'}`],
+    
     [
       '입주가능일',
       data.available_date
@@ -130,83 +132,95 @@ export default async function ListingDetailContent({ id }: ListingDetailContentP
           })
         : '-',
     ],
-    ['사용승인일', data.approval_date ? new Date(data.approval_date).toLocaleDateString('ko-KR') : '-'],
+    ['임대 현황', data.lease_status ?? '-'],
+
   ];
 
   return (
-    <main className="container mx-auto p-4">
-      {/* 헤더 */}
-      <div className="text-center mb-10">
-        <h1 className="filter_a text-4xl font-extrabold text-sky-400 drop-shadow-md">상세 매물 정보</h1>
-        <br/>
-        <p className="text-gray-500 text-base sm:text-s md:text-lg">더욱 상세한 정보를 원하시면 언제든지 연락주세요 ^^</p>
-        <p className='h-10'></p>
-      </div>
+<main className="container mx-auto p-4">
+  {/* 헤더 */}
+  <div className="text-center mb-10">
+    <h1 className="filter_a text-4xl font-extrabold text-sky-400 drop-shadow-md">상세 매물 정보</h1>
+    <br />
+    <p className="text-gray-500 text-base sm:text-s md:text-lg">더욱 상세한 정보를 원하시면 언제든지 연락주세요 ^^</p>
+    <p className='h-10'></p>
+  </div>
 
-      {/* 본문 (이미지 + 설명) */}
-      <div className="flex flex-col lg:flex-row gap-8 items-stretch">
-        {/* 이미지 영역 */}
-        <div className="w-full lg:w-1/2 flex flex-col gap-6 h-full">
-          <div className="grid grid-cols-2 grid-rows-3 gap-4">
-            {imageList.map((src, idx) => (
-              <div key={idx} className="relative w-full" style={{ paddingBottom: '73%' }}>
-                <Image
-                  src={src}
-                  alt={`매물 사진 ${idx + 1}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  style={{ objectFit: 'cover' }}
-                  className="rounded-md"
-                  priority
-                />
-              </div>
-            ))}
+   {/* 제목 */}  
+
+  <span className="text-xl md:text-2xl font-bold text-gray-400">[no.{data.id_num}] &nbsp;</span>  
+  <span className="text-2xl md:text-3xl font-bold text-orange-400">  {data.title}</span>
+
+  <div className='h-7'></div>
+
+  {/* 설명 */}
+  <section className="w-full">
+    <h2 className="filter_a text-xl font-semibold mb-2 text-yellow-400">□ 매물설명</h2>
+    <div className='h-3'></div>
+    <p className="whitespace-pre-wrap text-xl overflow-auto max-h-32 border-b border-gray-300 pb-1">
+      &nbsp;&nbsp; {data.description ?? '설명 없음'}
+    </p>
+
+    <div className='h-7'></div>
+  </section>
+
+  {/* 본문 (이미지 + 설명) */}
+  <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+
+    {/* 이미지 영역 */}
+    <div className="padT w-full lg:w-[58%] flex flex-col gap-6 h-full order-1">
+      <div className="grid grid-cols-2 grid-rows-3 gap-4">
+        {imageList.map((src, idx) => (
+          <div key={idx} className="relative w-full" style={{ paddingBottom: '73%' }}>
+            <Image
+              src={src}
+              alt={`매물 사진 ${idx + 1}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              style={{ objectFit: 'cover' }}
+              className="rounded-md"
+              priority
+            />
           </div>
-        </div>
+        ))}
+      </div>
+    </div>
 
-        {/* 설명 영역 */}
-        <div className="w-full lg:w-1/2 backdrop-blur-md p-6 rounded-md bg-white/10 h-full">
-          <div className="flex flex-col gap-6 h-full">
-            {/* 제목 */}
-            <h1 className="text-2xl md:text-3xl font-bold text-orange-400">{data.title}</h1>
+    {/* 설명 영역 */}
+    <div className="w-full lg:w-[42%] backdrop-blur-md p-6 rounded-md bg-white/10 h-full order-2">
+      <div className="flex flex-col gap-1 h-full">
+       
+        {/* 소재지 */}
+        <section className="w-full rounded-t-sm p-4">
+          <h2 className="text-gray-600 text-xl font-bold mb-2">● 소재지</h2>
+          <p className="filter_a whitespace-pre-wrap font-bold overflow-auto max-h-32">
+            {[data.location_1, data.location_2, data.location_3, data.location_4, data.location_5]
+              .filter(Boolean)
+              .join(' ') || '주소 정보 없음'}
+          </p>
+        </section>
 
-            {/* 설명 */}
-            <section className="w-full bg-gray-100 rounded-t-sm p-4">
-              <h2 className="filter_a text-xl font-semibold mb-2 text-yellow-400">□ 매물설명</h2>
-              <div className='h-3'></div>
-              <p className="whitespace-pre-wrap overflow-auto max-h-32 border-b border-gray-500 pb-1">
-                &nbsp;&nbsp; {data.description ?? '설명 없음'}
-              </p>
-            </section>
+        <div className='h-3'></div>
 
-            {/* 소재지 */}
-            <section className="w-full rounded-t-sm p-4">
-              <h2 className="text-gray-600 text-xl font-bold mb-2">소재지</h2>
-              <p className="filter_a whitespace-pre-wrap font-bold overflow-auto max-h-32">
-                {[data.location_1, data.location_2, data.location_3, data.location_4, data.location_5]
-                  .filter(Boolean)
-                  .join(' ') || '주소 정보 없음'}
-              </p>
-            </section>
-
-            {/* 상세 항목 */}
-            {details.map(([label, value], i) => (
-              <div
-                key={i}
-                className="flex justify-between items-center rounded-md bg-white/5 border border-gray-200 "
-              >
-                <span className="proD font-semibold text-s text-gray-500 whitespace-nowrap ">{label}</span>
-                <span className="proD filter_a text-right text-s text-blue-400 break-words max-w-full">{value}</span>
-              </div>
-            ))}
-
-            {/* 관리자 버튼 */}
-            <div className="flex justify-end mt-4">
-              <AdminControls listingId={id} />
-            </div>
+        {/* 상세 항목 */}
+        {details.map(([label, value], i) => (
+          <div
+            key={i}
+            className="flex justify-between items-center rounded-md bg-white/5 border border-gray-200 "
+          >
+            <span className="padL proD font-semibold text-l text-gray-500 whitespace-nowrap "> ● &nbsp;  {label}</span>
+            <span className="padR proD filter_a text-right text-l text-blue-400 break-words max-w-full">{value}</span>
           </div>
+        ))}
+
+        {/* 관리자 버튼 */}
+        <div className="flex justify-end mt-4">
+          <AdminControls listingId={id} />
         </div>
       </div>
-    </main>
+    </div>
+  </div>
+</main>
+
   );
 }

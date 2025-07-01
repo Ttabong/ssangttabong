@@ -50,7 +50,7 @@ export default function Header() {
               flex
               flex-nowrap          /* 줄 바꿈 방지해서 메뉴가 한 줄에 유지되도록 */
               space-x-4
-              gap-4
+              gap-3
               font-semibold
               text-sm               /* 기본 글자 크기 */
               sm:text-base          /* 화면이 sm 이상일 땐 기본 크기 */

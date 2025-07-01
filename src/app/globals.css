@@ -240,8 +240,7 @@ header {
 }
 
 .proD {
-padding: 3px;
-
+padding: 2px;
 }
 
 .postsDetail {
@@ -571,6 +570,10 @@ padding: 3px;
 
 .padT {
   padding-top: 0.5rem;
+}
+
+.padTD {
+  padding-top: 1.5rem;
 }
 
 .padL {

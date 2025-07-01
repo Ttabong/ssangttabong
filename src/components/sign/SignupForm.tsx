@@ -144,6 +144,7 @@ export default function SignupForm() {
               passwordsMatch ? 'text-green-600' : 'text-red-600'
             }`}
           >
+            <div className='h-2'></div>
             {passwordsMatch ? '일치함' : '불일치'}
           </span>
         )}
