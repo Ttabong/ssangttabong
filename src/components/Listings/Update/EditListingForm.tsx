@@ -202,6 +202,7 @@ export default function ListingEditForm({ listingId }: Props) {
       error={error}
       setLoanAmountRaw={setLoanAmountRaw} 
       isSubmitting={isSubmitting}
+      loanAmountFormatted={formatKoreanPrice(loanAmountRaw.replace(/,/g, '') || '0')}
     />
   );
 }
