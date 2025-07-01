@@ -8,6 +8,7 @@ import ListingFormUI from '@/components/Listings/Create/ListingFormUI';
 import toast from 'react-hot-toast';
 import { formatKoreanPrice } from '@/utils/priceUtils';
 
+// 초기 폼 상태 정의 (빈 문자열과 기본값들)
 const initialFormState: ListingFormState = {
   client: '',
   phone: '',
@@ -50,16 +51,21 @@ const initialFormState: ListingFormState = {
 
 export default function ListingCreateForm() {
   const router = useRouter();
+
+  // 폼 상태 관리
   const [form, setForm] = useState<ListingFormState>(initialFormState);
+
+  // 금액 입력 필드 Raw 상태 (콤마가 포함된 문자열)
   const [priceRaw, setPriceRaw] = useState('');
   const [depositRaw, setDepositRaw] = useState('');
   const [monthlyRaw, setMonthlyRaw] = useState('');
   const [loanAmountRaw, setLoanAmountRaw] = useState('');
-  const [loanAmountFormatted, setLoanAmountFormatted] = useState('');
-
+  
+  // 에러 메시지 및 제출 중 상태
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // 폼 필드 변경 처리 함수 - 제네릭으로 타입 안전성 제공
   const handleChange = <K extends keyof ListingFormState>(
     name: K,
     value: ListingFormState[K]
@@ -67,26 +73,29 @@ export default function ListingCreateForm() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
+  // 숫자 또는 빈 문자열을 받아 null로 변환 처리 (DB 저장용)
   const toNullable = (value: number | '' | string) => {
     if (value === '') return null;
     const num = Number(value);
     return isNaN(num) ? null : num;
   };
 
+  // 융자금 입력 변화 처리: 숫자만 남기고, Raw, 포맷, form 상태를 동시에 업데이트
   const handleLoanAmountChange = (input: string) => {
-    const numeric = input.replace(/[^0-9]/g, '');
+    const numeric = input.replace(/[^0-9]/g, ''); // 숫자만 필터링
     setLoanAmountRaw(numeric);
-    setLoanAmountFormatted(numeric === '' ? '' : Number(numeric).toLocaleString('ko-KR'));
     setForm(prev => ({
       ...prev,
       loan_amount: numeric === '' ? '' : Number(numeric),
     }));
   };
 
+  // 이미지 추가 함수 (이미지 URL을 배열에 추가)
   const handleAddImages = (url: string) => {
     setForm(prev => ({ ...prev, images: [...prev.images, url] }));
   };
 
+  // 특정 인덱스 이미지 삭제 함수
   const handleRemoveImage = (index: number) => {
     setForm(prev => ({
       ...prev,
@@ -94,13 +103,15 @@ export default function ListingCreateForm() {
     }));
   };
 
+  // 폼 제출 처리
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting) return; // 중복 제출 방지
 
     setIsSubmitting(true);
     setError(null);
 
+    // 필수 입력값 검증
     if (
       !form.location_1 ||
       !form.location_2 ||
@@ -118,11 +129,13 @@ export default function ListingCreateForm() {
       return;
     }
 
+    // 가격/보증금/월세 등 타입에 따른 값 설정
     const price = form.type === '매매' ? form.price : '';
     const deposit = form.type === '전세' || form.type === '월세' ? form.deposit : '';
     const monthly = form.type === '월세' ? form.monthly : '';
     const imageUrls = form.images;
 
+    // Supabase DB 삽입 쿼리
     const { error } = await supabase.from('listings').insert([
       {
         location_1: form.location_1,
@@ -170,16 +183,20 @@ export default function ListingCreateForm() {
       },
     ]);
 
+    // 에러 처리
     if (error) {
       toast.error('저장 실패: ' + error.message);
       setIsSubmitting(false);
       return;
     }
 
+    // 성공 처리 - 초기화 후 목록 페이지로 이동
     toast.success('매물 등록 완료!');
     setForm(initialFormState);
+    setPriceRaw('');
+    setDepositRaw('');
+    setMonthlyRaw('');
     setLoanAmountRaw('');
-    setLoanAmountFormatted('');
     setIsSubmitting(false);
     router.push('/listings');
   };
@@ -202,7 +219,8 @@ export default function ListingCreateForm() {
       handleSubmit={handleSubmit}
       error={error}
       isSubmitting={isSubmitting}
-      loanAmountFormatted={formatKoreanPrice(loanAmountRaw.replace(/,/g, '') || '0')}
+      // loanAmountRaw에서 숫자만 남긴 뒤 formatKoreanPrice 호출하여 포맷된 문자열 전달
+      loanAmountFormatted={formatKoreanPrice(Number(loanAmountRaw || '0'))}
     />
   );
 }
