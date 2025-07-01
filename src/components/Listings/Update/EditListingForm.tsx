@@ -35,6 +35,8 @@ export default function ListingEditForm({ listingId }: Props) {
   const [monthlyRaw, setMonthlyRaw] = useState('');
   const [loanAmountRaw, setLoanAmountRaw] = useState('');
 
+  // 융자금 포맷 문자열 (쉼표 포함)
+  const [loanAmountFormatted, setLoanAmountFormatted] = useState('');
 
   // 에러 메시지 상태
   const [error, setError] = useState<string | null>(null);

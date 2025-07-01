@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import TextInput from './Inputs/TextInput';
 import SelectInput from './Inputs/SelectInput';
 import NumberInput from './Inputs/NumberInput';
@@ -26,25 +26,26 @@ const usageOptions = [
   { value: '기타', label: '기타' },
 ];
 
-export default function ListingFormUI({
-  form,
-  priceRaw,
-  depositRaw,
-  monthlyRaw,
-  loanAmountRaw,
-  setPriceRaw,
-  setDepositRaw,
-  setMonthlyRaw,
-  setLoanAmountRaw,
-  handleChange,
-  handleAddImages,
-  handleRemoveImage,
-  handleSubmit,
-  error,
-  isSubmitting,
-  onLoanAmountChange,
-}: ListingFormUIProps) {
-  return (
+    export default function ListingFormUI({
+        form,
+        priceRaw,
+        depositRaw,
+        monthlyRaw,
+        loanAmountRaw,
+        loanAmountFormatted,
+        setPriceRaw,
+        setDepositRaw,
+        setMonthlyRaw,
+        setLoanAmountRaw,
+        handleChange,
+        handleAddImages,
+        handleRemoveImage,
+        handleSubmit,
+        error,
+        isSubmitting,
+        onLoanAmountChange,
+    }: ListingFormUIProps) {
+      return (
 
 
     <form onSubmit={handleSubmit} className="container_c space-y-8 max-w-3xl mx-auto p-4">
@@ -440,7 +441,7 @@ export default function ListingFormUI({
             id="loan_amount"
             name="loan_amount"
             label="융자금"
-            value={loanAmountRaw}
+            value={loanAmountFormatted}
             onChange={(e) => {
               setLoanAmountRaw(e.target.value);
               onLoanAmountChange(e.target.value);

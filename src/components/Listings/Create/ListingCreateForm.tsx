@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import supabase from '@/lib/supabaseClient';
 import { ListingFormState } from '@/types/listing';
 import ListingFormUI from '@/components/Listings/Create/ListingFormUI';
-import toast from 'react-hot-toast'; // toast 알림 추가
-
+import toast from 'react-hot-toast';
+import { formatKoreanPrice } from '@/utils/priceUtils';
 
 const initialFormState: ListingFormState = {
   client: '',
@@ -44,9 +44,8 @@ const initialFormState: ListingFormState = {
   parking_count: '',
   approval_date: '',
   direction_base: '',
-  households: '',       // 총세대수
+  households: '',
   all_parking: '',
-
 };
 
 export default function ListingCreateForm() {
@@ -55,12 +54,12 @@ export default function ListingCreateForm() {
   const [priceRaw, setPriceRaw] = useState('');
   const [depositRaw, setDepositRaw] = useState('');
   const [monthlyRaw, setMonthlyRaw] = useState('');
-  const [loanAmountRaw, setLoanAmountRaw] = useState(''); // 융자금 원본 입력
+  const [loanAmountRaw, setLoanAmountRaw] = useState('');
+  const [loanAmountFormatted, setLoanAmountFormatted] = useState('');
 
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // 중복 방지용 상태
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ⚡ 제네릭으로 타입 맞춤 (images:string[] 타입도 지원)
   const handleChange = <K extends keyof ListingFormState>(
     name: K,
     value: ListingFormState[K]
@@ -68,22 +67,19 @@ export default function ListingCreateForm() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // '' 빈 문자열을 null로 변환, 숫자 타입만 변환
   const toNullable = (value: number | '' | string) => {
     if (value === '') return null;
     const num = Number(value);
     return isNaN(num) ? null : num;
   };
 
-  // 융자금 입력값 처리 함수
   const handleLoanAmountChange = (input: string) => {
-    setLoanAmountRaw(input);
-  
-    // form 상태 업데이트 (숫자 또는 빈 문자열)
-    const numericValue = input.replace(/[^0-9]/g, '');
+    const numeric = input.replace(/[^0-9]/g, '');
+    setLoanAmountRaw(numeric);
+    setLoanAmountFormatted(numeric === '' ? '' : Number(numeric).toLocaleString('ko-KR'));
     setForm(prev => ({
       ...prev,
-      loan_amount: numericValue === '' ? '' : Number(numericValue),
+      loan_amount: numeric === '' ? '' : Number(numeric),
     }));
   };
 
@@ -100,22 +96,20 @@ export default function ListingCreateForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (isSubmitting) return; // 중복 제출 방지
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
     setError(null);
 
-    // 필수 입력 검증
     if (
       !form.location_1 ||
       !form.location_2 ||
       !form.location_3 ||
       !form.title.trim() ||
       !form.type ||
-      (form.type === '매매' && form.price === '') || // 매매는 price 필수
-      (form.type === '전세' && form.deposit === '') || // 전세는 deposit 필수
-      (form.type === '월세' && (form.deposit === '' || form.monthly === '')) || // 월세는 deposit + monthly 둘 다 필수
+      (form.type === '매매' && form.price === '') ||
+      (form.type === '전세' && form.deposit === '') ||
+      (form.type === '월세' && (form.deposit === '' || form.monthly === '')) ||
       form.room_count === '' ||
       form.bathrooms === ''
     ) {
@@ -124,10 +118,8 @@ export default function ListingCreateForm() {
       return;
     }
 
-    // 거래 타입에 따른 가격값 설정
     const price = form.type === '매매' ? form.price : '';
-    const deposit =
-      form.type === '전세' || form.type === '월세' ? form.deposit : '';
+    const deposit = form.type === '전세' || form.type === '월세' ? form.deposit : '';
     const monthly = form.type === '월세' ? form.monthly : '';
     const imageUrls = form.images;
 
@@ -171,12 +163,10 @@ export default function ListingCreateForm() {
         image_url_5: imageUrls[4] ?? null,
         image_url_6: imageUrls[5] ?? null,
         parking_count: toNullable(form.parking_count),
-        approval_date: form.approval_date ? new Date(form.approval_date) : null,       
+        approval_date: form.approval_date ? new Date(form.approval_date) : null,
         direction_base: form.direction_base,
         households: toNullable(form.households),
         all_parking: toNullable(form.all_parking),
-        
-
       },
     ]);
 
@@ -189,6 +179,7 @@ export default function ListingCreateForm() {
     toast.success('매물 등록 완료!');
     setForm(initialFormState);
     setLoanAmountRaw('');
+    setLoanAmountFormatted('');
     setIsSubmitting(false);
     router.push('/listings');
   };
@@ -202,15 +193,16 @@ export default function ListingCreateForm() {
       setDepositRaw={setDepositRaw}
       monthlyRaw={monthlyRaw}
       setMonthlyRaw={setMonthlyRaw}
-      loanAmountRaw={loanAmountRaw} 
-      setLoanAmountRaw={setLoanAmountRaw}              // 추가: 융자금 원본 문자열
-      onLoanAmountChange={handleLoanAmountChange} // 추가: 변경 핸들러
+      loanAmountRaw={loanAmountRaw}
+      setLoanAmountRaw={setLoanAmountRaw}
+      onLoanAmountChange={handleLoanAmountChange}
       handleChange={handleChange}
       handleAddImages={handleAddImages}
       handleRemoveImage={handleRemoveImage}
       handleSubmit={handleSubmit}
       error={error}
       isSubmitting={isSubmitting}
+      loanAmountFormatted={formatKoreanPrice(loanAmountRaw.replace(/,/g, '') || '0')}
     />
   );
 }
