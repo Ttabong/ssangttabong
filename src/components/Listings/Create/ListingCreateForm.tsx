@@ -213,7 +213,7 @@ export default function ListingCreateForm() {
       setMonthlyRaw={setMonthlyRaw}
       loanAmountRaw={loanAmountRaw} 
       setLoanAmountRaw={setLoanAmountRaw}              // 추가: 융자금 원본 문자열
-      loanAmountFormatted={loanAmountFormatted}   // 추가: 포맷된 문자열
+      //loanAmountFormatted={loanAmountFormatted}   // 추가: 포맷된 문자열
       onLoanAmountChange={handleLoanAmountChange} // 추가: 변경 핸들러
       handleChange={handleChange}
       handleAddImages={handleAddImages}

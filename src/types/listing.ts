@@ -48,7 +48,7 @@ export type ListingFormUIProps = {
   depositRaw: string;
   monthlyRaw: string;
   loanAmountRaw: string;
-  loanAmountFormatted: string;
+  //loanAmountFormatted: string;
   setPriceRaw: React.Dispatch<React.SetStateAction<string>>;
   setDepositRaw: React.Dispatch<React.SetStateAction<string>>;
   setMonthlyRaw: React.Dispatch<React.SetStateAction<string>>;
