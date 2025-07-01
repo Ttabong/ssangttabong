@@ -6,7 +6,6 @@ import supabase from '@/lib/supabaseClient';
 import { ListingFormState } from '@/types/listing';
 import ListingFormUI from '@/components/Listings/Create/ListingFormUI';
 import toast from 'react-hot-toast';
-import { formatKoreanPrice } from '@/utils/priceUtils';
 
 // 초기 폼 상태 정의 (빈 문자열과 기본값들)
 const initialFormState: ListingFormState = {
@@ -56,10 +55,9 @@ export default function ListingCreateForm() {
   const [form, setForm] = useState<ListingFormState>(initialFormState);
 
   // 금액 입력 필드 Raw 상태 (콤마가 포함된 문자열)
-  const [priceRaw, setPriceRaw] = useState('');
+  const [priceRaw, setPriceRaw] = useState<string>('');
   const [depositRaw, setDepositRaw] = useState('');
   const [monthlyRaw, setMonthlyRaw] = useState('');
-  const [loanAmountRaw, setLoanAmountRaw] = useState('');
   
   // 에러 메시지 및 제출 중 상태
   const [error, setError] = useState<string | null>(null);
@@ -80,16 +78,6 @@ export default function ListingCreateForm() {
     return isNaN(num) ? null : num;
   };
 
-  // 융자금 입력 변화 처리: 숫자만 남기고, Raw, 포맷, form 상태를 동시에 업데이트
-  const handleLoanAmountChange = (input: string) => {
-    const numeric = input.replace(/[^0-9]/g, ''); // 숫자만 필터링
-    setLoanAmountRaw(numeric);
-    setForm(prev => ({
-      ...prev,
-      loan_amount: numeric === '' ? '' : Number(numeric),
-    }));
-  };
-
   // 이미지 추가 함수 (이미지 URL을 배열에 추가)
   const handleAddImages = (url: string) => {
     setForm(prev => ({ ...prev, images: [...prev.images, url] }));
@@ -101,6 +89,16 @@ export default function ListingCreateForm() {
       ...prev,
       images: prev.images.filter((_, i) => i !== index),
     }));
+  };
+
+  // 융자금 입력 변경 핸들러 (콤마 포함된 문자열 처리 및 숫자 변환)
+  const onLoanAmountChange = (value: string) => {
+    // 콤마 제거한 숫자 문자열만 남김
+    const numeric = value.replace(/,/g, '');
+
+    // 상태에 콤마 포함한 원본 값 저장 (표시용)
+    // 폼 상태에는 숫자나 빈 문자열로 저장
+    handleChange('loan_amount', numeric === '' ? '' : Number(numeric));
   };
 
   // 폼 제출 처리
@@ -196,7 +194,6 @@ export default function ListingCreateForm() {
     setPriceRaw('');
     setDepositRaw('');
     setMonthlyRaw('');
-    setLoanAmountRaw('');
     setIsSubmitting(false);
     router.push('/listings');
   };
@@ -210,17 +207,13 @@ export default function ListingCreateForm() {
       setDepositRaw={setDepositRaw}
       monthlyRaw={monthlyRaw}
       setMonthlyRaw={setMonthlyRaw}
-      loanAmountRaw={loanAmountRaw}
-      setLoanAmountRaw={setLoanAmountRaw}
-      onLoanAmountChange={handleLoanAmountChange}
       handleChange={handleChange}
       handleAddImages={handleAddImages}
       handleRemoveImage={handleRemoveImage}
       handleSubmit={handleSubmit}
       error={error}
       isSubmitting={isSubmitting}
-      // loanAmountRaw에서 숫자만 남긴 뒤 formatKoreanPrice 호출하여 포맷된 문자열 전달
-      loanAmountFormatted={formatKoreanPrice(Number(loanAmountRaw || '0'))}
+      onLoanAmountChange={onLoanAmountChange} // 이 부분 꼭 추가!
     />
   );
 }

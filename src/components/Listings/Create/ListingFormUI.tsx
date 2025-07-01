@@ -1,13 +1,14 @@
 'use client';
 
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import TextInput from './Inputs/TextInput';
 import SelectInput from './Inputs/SelectInput';
 import NumberInput from './Inputs/NumberInput';
 import CheckboxInput from './Inputs/CheckboxInput';
 import LocationSelector from './LocationSelector';
 import ImageUploader from './ImageUploader';
-import { ListingFormUIProps } from '@/types/listing';
+
+import { ListingFormState } from '@/types/listing';
 import Image from 'next/image';
 import { formatKoreanPrice, handleCommaInput } from '@/utils/priceUtils';
 
@@ -26,24 +27,39 @@ const usageOptions = [
   { value: '기타', label: '기타' },
 ];
 
+      interface ListingFormUIProps {
+        form: ListingFormState;
+        priceRaw: string;
+        depositRaw: string;
+        monthlyRaw: string;
+        setPriceRaw: React.Dispatch<React.SetStateAction<string>>;        
+        setDepositRaw: React.Dispatch<React.SetStateAction<string>>;  // 수정
+        setMonthlyRaw: React.Dispatch<React.SetStateAction<string>>;  // 수정
+        handleChange: <K extends keyof ListingFormState>(name: K, value: ListingFormState[K]) => void;
+        handleAddImages: (url: string) => void;
+        handleRemoveImage: (index: number) => void;
+        handleSubmit: (e: React.FormEvent) => void;
+        error: string | null;
+        isSubmitting: boolean;
+        onLoanAmountChange: (value: string) => void;
+      }
+
+
     export default function ListingFormUI({
-        form,
-        priceRaw,
-        depositRaw,
-        monthlyRaw,
-        loanAmountRaw,
-        loanAmountFormatted,
-        setPriceRaw,
-        setDepositRaw,
-        setMonthlyRaw,
-        setLoanAmountRaw,
-        handleChange,
-        handleAddImages,
-        handleRemoveImage,
-        handleSubmit,
-        error,
-        isSubmitting,
-        onLoanAmountChange,
+      form,
+      priceRaw,
+      depositRaw,
+      monthlyRaw,
+      setPriceRaw,
+      setDepositRaw,
+      setMonthlyRaw,
+      handleChange,
+      handleAddImages,
+      handleRemoveImage,
+      handleSubmit,
+      error,
+      isSubmitting,
+      onLoanAmountChange,
     }: ListingFormUIProps) {
       return (
 
@@ -435,26 +451,28 @@ const usageOptions = [
       </div>
 
       <div className="create-h flex flex-wrap gap-4">
+
         {/* 융자금 */}
         <div className="create-q flex-1 min-w-[200px] border border-gray-300 ">
           <TextInput
             id="loan_amount"
             name="loan_amount"
             label="융자금"
-            value={loanAmountFormatted}
-            onChange={(e) => {
-              setLoanAmountRaw(e.target.value);
-              onLoanAmountChange(e.target.value);
-            }}
-            placeholder="0"
+            // form.loan_amount가 0일 때도 보여주고, null/''일 땐 빈 문자열
+            value={
+              form.loan_amount === '' || form.loan_amount == null
+                ? ''
+                : Number(form.loan_amount).toLocaleString('ko-KR')
+            }
+            onChange={(e) => onLoanAmountChange(e.target.value)}
           />
-            {form.loan_amount === 0 ? (
-              <p className="text-sm text-gray-500 mt-1">융자금 없음</p>
-            ) : form.loan_amount === '' || form.loan_amount == null ? (
-              <p className="text-sm text-gray-400 mt-1">표시하지 않음</p>
-            ) : (
-              <p className="text-sm text-gray-500 mt-1">{formatKoreanPrice(form.loan_amount)} 원</p>
-            )}
+          {form.loan_amount === 0 ? (
+            <p className="text-sm text-gray-500 mt-1">융자금 없음</p>
+          ) : form.loan_amount === '' || form.loan_amount == null ? (
+            <p className="text-sm text-gray-400 mt-1">표시하지 않음</p>
+          ) : (
+            <p className="text-sm text-gray-500 mt-1">{formatKoreanPrice(form.loan_amount)} 원</p>
+          )}
         </div>
 
         {/* 사용승인일 */}
