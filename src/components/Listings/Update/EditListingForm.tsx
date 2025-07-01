@@ -25,13 +25,9 @@ export default function ListingEditForm({ listingId }: Props) {
   const router = useRouter();
 
   const [form, setForm] = useState<ListingFormState>(initialFormState);
-
-  // 금액 입력 필드 Raw 상태 (콤마 포함된 문자열)
   const [priceRaw, setPriceRaw] = useState('');
   const [depositRaw, setDepositRaw] = useState('');
   const [monthlyRaw, setMonthlyRaw] = useState('');
-  const [loanAmountRaw, setLoanAmountRaw] = useState('');
-
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -70,41 +66,34 @@ export default function ListingEditForm({ listingId }: Props) {
       setPriceRaw(data.price?.toLocaleString() ?? '');
       setDepositRaw(data.deposit?.toLocaleString() ?? '');
       setMonthlyRaw(data.monthly?.toLocaleString() ?? '');
-      setLoanAmountRaw(data.loan_amount?.toLocaleString() ?? '');
+      // loanAmountRaw 제거됨
     };
     fetchData();
   }, [listingId]);
 
-  // 폼 변경 함수 (타입 안전성 유지)
   const handleChange = <K extends keyof ListingFormState>(name: K, value: ListingFormState[K]) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // 빈 문자열은 null, 숫자면 숫자 변환
   const toNullable = (value: number | '' | string) => value === '' ? null : Number(value);
 
-  // 융자금 입력 변경 핸들러
+  // 융자금 변경 핸들러
   const onLoanAmountChange = (input: string) => {
-    // 콤마 제거하고 숫자만 남김
     const numeric = input.replace(/[^0-9]/g, '');
-    setLoanAmountRaw(input);
     setForm(prev => ({
       ...prev,
       loan_amount: numeric === '' ? '' : Number(numeric),
     }));
   };
 
-  // 이미지 추가
   const handleAddImages = (url: string) => {
     setForm(prev => ({ ...prev, images: [...prev.images, url] }));
   };
 
-  // 이미지 삭제
   const handleRemoveImage = (index: number) => {
     setForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== index) }));
   };
 
-  // 제출 처리
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -113,10 +102,10 @@ export default function ListingEditForm({ listingId }: Props) {
     setError(null);
 
     if (!form.title.trim() || !form.location_1 || !form.location_2 || !form.location_3 || !form.type ||
-        (form.type === '매매' && form.price === '') ||
-        (form.type === '전세' && form.deposit === '') ||
-        (form.type === '월세' && (form.deposit === '' || form.monthly === '')) ||
-        form.room_count === '' || form.bathrooms === '') {
+      (form.type === '매매' && form.price === '') ||
+      (form.type === '전세' && form.deposit === '') ||
+      (form.type === '월세' && (form.deposit === '' || form.monthly === '')) ||
+      form.room_count === '' || form.bathrooms === '') {
       toast.error('필수 항목을 입력해 주세요.');
       setIsSubmitting(false);
       return;
@@ -170,7 +159,6 @@ export default function ListingEditForm({ listingId }: Props) {
       error={error}
       isSubmitting={isSubmitting}
       onLoanAmountChange={onLoanAmountChange}
-
     />
   );
 }
