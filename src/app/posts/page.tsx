@@ -23,7 +23,7 @@ type Post = {
   image_url: string | null;
   post_views: { count: number }[];
   post_likes: { count: number }[];
-  post_comments: { count: number }[];
+  comments: { count: number }[];
 };
 
 const POSTS_PER_PAGE = 12;
@@ -50,27 +50,27 @@ export default function PostsList() {
   }, [user]);
 
   // 게시글 불러오기
-  const fetchPosts = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('posts')
-      .select(`
-        id,
-        user_nickname,
-        title,
-        created_at,
-        image_url,
-        post_views(count),
-        post_likes(count),
-        post_comments(count) 
-      `)
-      .order('created_at', { ascending: false })
-      .limit(POSTS_PER_PAGE);
+    const fetchPosts = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('posts')
+        .select(`
+          id,
+          user_nickname,
+          title,
+          created_at,
+          image_url,
+          post_views(count),
+          post_likes(count),
+          comments!comments_post_id_fkey(count)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(POSTS_PER_PAGE);
 
-    if (error) alert('게시글 불러오기 실패: ' + error.message);
-    else setPosts(data ?? []);
-    setLoading(false);
-  };
+      if (error) alert('게시글 불러오기 실패: ' + error.message);
+      else setPosts(data ?? []);
+      setLoading(false);
+    };
 
   // 내가 좋아요 누른 게시글 목록 불러오기
     const fetchLikedPosts = useCallback(async () => {
@@ -227,7 +227,7 @@ export default function PostsList() {
 
               {/* 조회수, 좋아요, 댓글 수, 작성자 닉네임 */}
               <div className="padL padT flex justify-between items-center text-gray-500 text-sm">
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-3 items-center">
                   {/* 조회수 */}
                   <span className="flex items-center gap-1">
                     <AiOutlineEye className="text-xl" />
@@ -255,7 +255,7 @@ export default function PostsList() {
                   {/* 댓글 수 */}
                   <span className="flex items-center gap-1 text-blue-500">
                     <AiOutlineComment className="text-xl" />
-                    {post.post_comments?.[0]?.count ?? 0}
+                    {post.comments?.[0]?.count ?? 0}
                   </span>
                 </div>
 

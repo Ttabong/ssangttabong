@@ -243,14 +243,15 @@ export default function PostDetailPage() {
     }
   };
 
-  // 댓글 삭제
+    // 댓글 삭제
   const deleteComment = async (commentId: number, commentUserId: string) => {
     if (!user) {
       alert("로그인이 필요합니다.");
       return;
     }
-    if (user.id !== commentUserId) {
-      alert("본인 댓글만 삭제할 수 있습니다.");
+    // 작성자 또는 관리자인 경우 삭제 가능
+    if (user.id !== commentUserId && !isAdmin) {
+      alert("본인 댓글 또는 관리자만 삭제할 수 있습니다.");
       return;
     }
     if (!confirm("댓글을 삭제하시겠습니까?")) return;
@@ -380,7 +381,7 @@ export default function PostDetailPage() {
                   ㄴ {comment.content}
                 </p>
               </div>
-              {user.id === comment.user_id && (
+              {(user.id === comment.user_id || isAdmin) && (
                 <button
                   className="mrBtn text-red-500 text-xl self-start hover:scale-180"
                   onClick={() => deleteComment(comment.id, comment.user_id)}
@@ -420,14 +421,19 @@ export default function PostDetailPage() {
       </section>
 
       {/* ✏️ 수정 / 삭제 버튼 (작성자 or 관리자) */}
-      {(isOwner || isAdmin) && (
-        <div className="magT flex justify-end gap-4">
+      <div className="magT flex justify-end gap-4">
+        {/* 수정 버튼: 작성자에게만 노출 */}
+        {isOwner && (
           <button
             onClick={() => router.push(`/posts/edit/${post.id}`)}
             className="btn-login bg-yellow-400 hover:bg-yellow-500 text-white px-6 py-3 rounded transition"
           >
             수정
           </button>
+        )}
+
+        {/* 삭제 버튼: 작성자 또는 관리자에게 노출 */}
+        {(isOwner || isAdmin) && (
           <button
             onClick={async () => {
               if (!confirm("정말로 이 글을 삭제하시겠습니까?")) return;
@@ -446,8 +452,8 @@ export default function PostDetailPage() {
           >
             삭제
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
