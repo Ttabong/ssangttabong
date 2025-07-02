@@ -35,7 +35,7 @@ export default function SignupForm() {
       email,
       password,
       options: {
-        emailRedirectTo: 'https://ssangttabong.vercel.app/sign/callback',
+        emailRedirectTo: 'https://ssangttabong.vercel.app/sign/callback', // 실제 존재하는 페이지 주소로 수정하세요
       },
     });
 
@@ -47,10 +47,9 @@ export default function SignupForm() {
 
     const user = data.user;
 
-    // 프로필 정보 저장 (RLS 정책 필요: id = auth.uid())
     const { error: profileError } = await supabase.from('profiles').insert([
       {
-        id: user.id, // 반드시 auth.uid()와 일치해야 RLS 통과
+        id: user.id,
         email,
         nickname,
         role: 'user',
@@ -63,7 +62,7 @@ export default function SignupForm() {
       return;
     }
 
-    alert('회원가입 성공!');
+    alert('회원가입 성공! 인증 이메일을 확인해주세요.');
     router.push('/sign/LoginForm');
     setLoading(false);
   };
@@ -78,84 +77,74 @@ export default function SignupForm() {
         회원가입
       </h2>
 
-      <div className="h-5" />
+      {/* 닉네임 입력 */}
+      <div>
+        <label htmlFor="nickname" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
+          * 아이디
+        </label>
+        <input
+          id="nickname"
+          type="text"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          required
+          className="w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
+        />
+      </div>
 
-      <div className="container_lc">
-        {/* 닉네임 입력 */}
-        <div>
-          <label htmlFor="nickname" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
-            * 아이디
-          </label>
-          <input
-            id="nickname"
-            type="text"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            required
-            className="w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
-          />
-        </div>
+      {/* 이메일 입력 */}
+      <div>
+        <label htmlFor="email" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
+          * 이메일
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
+        />
+      </div>
 
-        <div className="h-5" />
+      {/* 비밀번호 입력 */}
+      <div>
+        <label htmlFor="password" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
+          * 비밀번호
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
+        />
+      </div>
 
-        {/* 이메일 입력 */}
-        <div>
-          <label htmlFor="email" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
-            * 이메일
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
-          />
-        </div>
-
-        <div className="h-3" />
-
-        {/* 비밀번호 입력 */}
-        <div>
-          <label htmlFor="password" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
-            * 비밀번호
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
-          />
-        </div>
-
-        <div className="h-2" />
-
-        {/* 비밀번호 확인 */}
-        <div className="relative">
-          <label htmlFor="confirmPassword" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
-            * 비밀번호 확인
-          </label>
-          <input
-            id="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            className="w-full px-5 py-4 pr-24 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
-          />
-          {confirmPassword.length > 0 && (
-            <span
-              className={`absolute top-11 right-4 text-sm font-semibold ${
-                passwordsMatch ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              <div className='h-3'></div>
-              {passwordsMatch ? '일치함' : '불일치'}
-            </span>
-          )}
-        </div>
+      {/* 비밀번호 확인 */}
+      <div className="relative">
+        <label htmlFor="confirmPassword" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
+          * 비밀번호 확인
+        </label>
+        <input
+          id="confirmPassword"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          className="w-full px-5 py-4 pr-24 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
+        />
+        {confirmPassword.length > 0 && (
+          <span
+            className={`absolute top-11 right-4 text-sm font-semibold ${
+              passwordsMatch ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
+            <div className="h-3"></div>
+            {passwordsMatch ? '일치함' : '불일치'}
+          </span>
+        )}
       </div>
 
       <div className="flex justify-center">
