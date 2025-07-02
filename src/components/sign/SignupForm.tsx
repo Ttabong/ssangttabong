@@ -35,7 +35,7 @@ export default function SignupForm() {
       email,
       password,
       options: {
-        emailRedirectTo: 'https://ssangttabong.vercel.app/',
+        emailRedirectTo: 'https://ssangttabong.vercel.app/confirm-email',
       },
     });
 
