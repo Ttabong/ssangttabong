@@ -10,8 +10,15 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const checkSession = async () => {
       const { data, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error('세션 조회 중 오류:', error);
+        alert('인증 중 오류가 발생했습니다.');
+        router.push('/sign/login');
+        return;
+      }
+
       if (data.session) {
-        // 로그인된 사용자 → 메인 페이지로 이동
         router.push('/');
       } else {
         alert('인증에 실패했습니다.');
