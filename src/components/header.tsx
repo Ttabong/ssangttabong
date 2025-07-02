@@ -5,19 +5,20 @@ import { useState } from 'react'
 import useUser from '@/hooks/useUser'
 import supabase from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import { FaUser } from 'react-icons/fa' // 사람 아이콘 임포트
 
 export default function Header() {
-  const { user, loading } = useUser(); // 현재 로그인한 사용자 정보 및 로딩 상태
-  const router = useRouter();
-  const [loggingOut, setLoggingOut] = useState(false); // 로그아웃 중 상태 관리
+  const { user, loading } = useUser() // 현재 로그인한 사용자 정보 및 로딩 상태
+  const router = useRouter()
+  const [loggingOut, setLoggingOut] = useState(false) // 로그아웃 중 상태 관리
 
   // 로그아웃 처리 함수
   const handleLogout = async () => {
-    setLoggingOut(true);
-    await supabase.auth.signOut(); // Supabase 로그아웃
-    router.push('/sign/LoginForm'); // 로그아웃 후 로그인 페이지로 이동
-    setLoggingOut(false);
-  };
+    setLoggingOut(true)
+    await supabase.auth.signOut() // Supabase 로그아웃
+    router.push('/sign/LoginForm') // 로그아웃 후 로그인 페이지로 이동
+    setLoggingOut(false)
+  }
 
   return (
     <header>
@@ -25,22 +26,45 @@ export default function Header() {
         {/* 로고 영역 */}
         <div className="flex items-end gap-2">
           <Link href="/" className="block w-fit h-fit">
-            <div className="logo leading-none text-large font-bold">
-              수 부동산
-            </div>
+            <div className="logo leading-none text-large font-bold">수 부동산</div>
           </Link>
 
           <Link href="/" className="block w-fit h-fit">
             <div className="flex flex-col justify-between h-full leading-tight">
-              <div className="text-xs text-gray-500">
-                Real Estate Agent
-              </div>
-              <div className="filter_a text-small">
-                공인중개사 사무소
-              </div>
+              <div className="text-xs text-gray-500">Real Estate Agent</div>
+              <div className="filter_a text-small">공인중개사 사무소</div>
             </div>
           </Link>
         </div>
+
+        {/* 로그인 상태일 때 닉네임 및 로그아웃 버튼 영역 - 로고 오른쪽, 네비 위로 이동 */}
+        {!loading && user && (
+          <div
+            className="flex flex-col items-center bg-gray-100 border border-gray-300 rounded-lg px-4 py-1 min-w-[110px] shadow-md mr-6"
+            style={{ height: '52px' }} // 헤더 높이 맞춤
+          >
+            {/* 닉네임 영역: 사람 아이콘 + 닉네임 클릭 시 회원정보수정 페이지로 이동 */}
+            <button
+              onClick={() => router.push('/sign/profile')}
+              className="magT flex items-center text-gray-700 font-semibold max-w-[120px] truncate whitespace-nowrap overflow-hidden text-s text-center hover:text-orange-500 transition"
+              aria-label="회원정보 수정 페이지로 이동"
+              type="button"
+            >
+              <FaUser className="text-orange-500 mr-2 flex-shrink-0" />
+              <span>{user.nickname} 님</span>
+            </button>
+            <div className='h-1'></div>
+            {/* 로그아웃 버튼 */}
+            <button
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="bg-red-400 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm w-full "
+              style={{ minWidth: '100px' }}
+            >
+              {loggingOut ? '로그아웃 중...' : '로그아웃'}
+            </button>
+          </div>
+        )}
 
         {/* 네비게이션 바 */}
         <nav className="w-full flex justify-end pr-4">
@@ -103,30 +127,17 @@ export default function Header() {
             {!loading && !user && (
               <>
                 <li>
-                 |&nbsp; <Link className='filter_a font-bold' href="/sign/LoginForm">로그인</Link>
+                  |&nbsp;{' '}
+                  <Link className="filter_a font-bold" href="/sign/LoginForm">
+                    로그인
+                  </Link>
                 </li>
                 <li>
-                  <Link className='filter_a font-bold' href="/sign/SignupForm">회원가입</Link>
+                  <Link className="filter_a font-bold" href="/sign/SignupForm">
+                    회원가입
+                  </Link>
                 </li>
               </>
-            )}
-
-            {/* 로그인 상태일 때 닉네임 및 로그아웃 버튼 표시 - 카드 스타일로 이쁘게 */}
-            {!loading && user && (
-              <li>
-                <div className="flex flex-col items-center bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 min-w-[100px]">
-                  <span className="filter_a text-sm text-gray-700 font-semibold mb-1 truncate max-w-full text-center">
-                    {user.nickname} 님
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    disabled={loggingOut}
-                    className="bg-red-400 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm w-full"
-                  >
-                    {loggingOut ? '로그아웃 중...' : 'Log-out'}
-                  </button>
-                </div>
-              </li>
             )}
           </ul>
         </nav>

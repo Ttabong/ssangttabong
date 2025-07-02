@@ -20,7 +20,7 @@ export default function LoginForm() {
     if (error) {
       alert('인증 메일 재전송 실패: ' + error.message);
     } else {
-      alert('인증 메일이 다시 발송되었습니다. 메일함(스팸함 포함)을 확인해주세요.');
+      alert('인증 메일이 다시 발송되었습니다.\n 메일함(스팸함 포함)을 확인해주세요.');
     }
   };
 

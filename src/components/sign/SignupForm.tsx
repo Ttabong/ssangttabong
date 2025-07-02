@@ -31,10 +31,12 @@ export default function SignupForm() {
       return;
     }
 
-    // 이메일 인증 없이 회원가입
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: 'https://ssangttabong.vercel.app/',
+      },
     });
 
     if (error || !data.user) {
