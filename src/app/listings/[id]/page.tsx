@@ -14,13 +14,10 @@ export default async function ListingDetailPage({ params }: ListingDetailPagePro
 
 import ListingDetailContent from '@/app/listings/[id]/ListingDetailContent';  // 경로는 실제 위치에 맞게 조정
 
-
-
 type Props = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
-export default async function ListingDetailPage({ params }: Props) {
-  const resolvedParams = await params;
-  return <ListingDetailContent id={resolvedParams.id} />;
+export default function ListingDetailPage({ params }: Props) {
+  return <ListingDetailContent id={params.id} />;
 }
