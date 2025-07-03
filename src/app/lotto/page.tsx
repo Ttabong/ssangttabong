@@ -150,16 +150,17 @@ export default function LottoTensionPage() {
         <Stars />
       </div>
 
-        <section
-            className="w-9/10 h-50 text-center relative overflow-hidden"
-            style={{
-            backgroundImage: 'url("/images/lottoLink.jpg")',
-            backgroundSize: '100%',           // 또는 'cover' 또는 'contain'
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',   // ✅ 반복 제거
-            }}
-                >
-        </section>
+      <section
+        className="w-full aspect-[2/1] relative overflow-hidden"
+        style={{
+          backgroundImage: 'url("/images/lottoLink.jpg")',
+          backgroundSize: 'contain',       // ✅ 이미지 비율 유지하면서 전체 보이게
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundColor: '#10263c',         // 이미지가 작아 빈 공간이 생길 수 있으므로 배경색 지정
+        }}
+      >
+      </section>
 
 
       <div className='h-10'></div>
