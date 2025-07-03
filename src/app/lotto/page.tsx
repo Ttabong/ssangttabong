@@ -39,7 +39,9 @@ function Ball({ num, borderColor }: { num: number; borderColor?: string }) {
   const baseColor = getBallColor(num)
   return (
     <motion.div
-      className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl md:text-2xl shadow-lg ${baseColor} ${borderColor ? borderColor : ''} border-4`}
+      className={`min-w-[10vw] max-w-[3.5rem] aspect-square rounded-full 
+                  flex items-center justify-center text-white font-bold text-base sm:text-lg 
+                  shadow-lg ${baseColor} ${borderColor ?? ''} border-4`}
       variants={ballVariants}
       initial="floating"
       animate="draw"
@@ -195,7 +197,7 @@ export default function LottoTensionPage() {
 
       {/* 현재 추첨중인 공들 */}
       {drawnBalls.length > 0 && (
-        <div className="flex justify-center gap-2 sm:gap-3 md:gap-5 mb-12 flex-wrap max-w-lg p-4 shadow-lg rounded-lg bg-gray-800/60">
+        <div className="flex justify-center gap-2 sm:gap-3 md:gap-5 mb-12 flex-nowrap px-2">
           {drawnBalls.map((num) => (
             <Ball key={num} num={num} borderColor="border-yellow-200" />
           ))}
@@ -228,24 +230,24 @@ export default function LottoTensionPage() {
       <div className='h-10'></div>
 
       {/* 이전 추첨 결과들 */}
-      <div className="w-full max-w-3xl space-y-6">
-        {history.map((nums, i) => (
-        <div
-        key={i}
-        className="magB flex flex-col md:flex-row justify-center gap-2 sm:gap-4 md:gap-5 flex-wrap shadow-inner rounded-lg bg-gray-800/40 p-4"
-        aria-label={`이전 추첨 번호 ${i + 1}`}
-        >
-            {/* Game 텍스트: self-center로 세로 중앙 정렬 */}
-            <div className="text-lg sm:text-xl md:text-2xl text-orange-400 mb-2 md:mb-0 md:mr-4 self-center">
+        <div className="padL w-full max-w-3xl space-y-6">
+          {history.map((nums, i) => (
+            <div
+              key={i}
+              className="magB p-4 rounded-lg shadow-inner bg-gray-800/40"
+              aria-label={`이전 추첨 번호 ${i + 1}`}
+            >
+              {/* Game 텍스트 - 윗줄 좌측 정렬 */}
+              <div className="text-lg sm:text-xl md:text-2xl text-orange-400 mb-2">
                 Game {i + 1} :
-            </div>
+              </div>
 
-            {/* 공 묶음 */}
-            <div className="magB flex justify-center flex-wrap gap-2 sm:gap-3 md:gap-4">
+              {/* 공 묶음 - 아랫줄 가운데 정렬 */}
+              <div className="flex justify-center flex-wrap gap-2 sm:gap-3 md:gap-4">
                 {nums.map((num) => (
-                <Ball key={num} num={num} borderColor="border-orange-200" />
-                ))}  
-            </div>
+                  <Ball key={num} num={num} borderColor="border-orange-200" />
+                ))}
+              </div>
             <div className='h-2'/>
         </div>
         ))}
