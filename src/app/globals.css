@@ -124,7 +124,7 @@ header {
   align-items: center;
   flex-wrap: wrap;
   color: var(--color-gray-dark) !important;
-  row-gap: 10px;
+  row-gap: 20px;
 }
 
 .logo {

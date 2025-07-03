@@ -56,7 +56,7 @@ export default function FilterPanel({
 }: FilterPanelProps) {
   return (
     <div className="w-full p-4 rounded-md shadow-md space-y-6">
-      <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-10 lg:items-end">
+      <div className="flex flex-col gap-5 lg:flex-row lg:flex-wrap lg:gap-x-17 lg:items-end">
         {/* 거래 유형 */}
         <div className="space-y-2">
           <p className="filter_a text-lg font-bold text-gray-700">◈ 거래 유형</p>
@@ -80,7 +80,7 @@ export default function FilterPanel({
         {!hideUsage && (
           <div className="space-y-2">
             <p className="filter_a text-lg font-bold text-gray-700">◈ 용도</p>
-            <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex flex-wrap gap-2 items-center">
               {USAGE_TYPES.map((usage) => (
                 <label key={usage} className="inline-flex items-center gap-1 cursor-pointer">
                   <input
@@ -155,7 +155,9 @@ export default function FilterPanel({
         </div>
       </div>
             
-      <hr className="border-t border-gray-300 my-4" />     
+   
+      <div className='h-3'></div>      
+
 
       {/* 거래 유형별 가격 필터 */}
       {selectedTradeType === '매매' && (

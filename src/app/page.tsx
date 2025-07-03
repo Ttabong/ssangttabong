@@ -69,6 +69,44 @@ export default function Home() {
         </section>
 
         <div className="h-5" />
+
+
+          <div className="grid grid-cols-3 gap-3 max-w-screen-xl mx-auto md:grid-cols-3 md:auto-rows-fr">
+
+
+          <Link href="/lotto">
+            <Image
+              src="/images/lottoLink.jpg"
+              alt="로또번호 생성"
+              width={400}
+              height={300}
+              className="hero mx-auto cursor-pointer hover:scale-105 transition-transform"
+            />
+          </Link>
+
+          <Link href="/">
+            <Image
+              src="/images/ing.jpg"
+              alt="준비중"
+              width={400}
+              height={300}
+              className="hero mx-auto cursor-pointer hover:scale-105 transition-transform"
+            />
+          </Link>
+
+          <Link href="/">
+            <Image
+              src="/images/ing.jpg"
+              alt="준비중"
+              width={400}
+              height={300}
+              className="hero mx-auto cursor-pointer hover:scale-105 transition-transform"
+            />
+          </Link>
+
+
+
+          </div>
       </main>
     </>
   );

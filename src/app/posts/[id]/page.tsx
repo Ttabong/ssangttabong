@@ -314,7 +314,7 @@ export default function PostDetailPage() {
 
       {/* 👤 작성자, ❤️ 좋아요, 👁 조회수 */}
       <div className="underB">
-        <div className="flex justify-between items-center mt-4 text-gray-600 text-sm">
+        <div className="flex justify-between items-center mt-4 text-gray-600 text-lg">
           <div className="flex items-center gap-1">
             <HiOutlineUser className="text-orange-500 text-lg" />
             <span>{post.user_nickname || '익명'}</span>
@@ -420,6 +420,8 @@ export default function PostDetailPage() {
         </div>
       </section>
 
+      <div className="h-13"></div>
+
       {/* ✏️ 수정 / 삭제 버튼 (작성자 or 관리자) */}
       <div className="magT flex justify-end gap-4">
         {/* 수정 버튼: 작성자에게만 노출 */}
@@ -454,6 +456,9 @@ export default function PostDetailPage() {
           </button>
         )}
       </div>
+
+        <div className="h-5"></div>
+
     </div>
   );
 }

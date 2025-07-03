@@ -32,39 +32,12 @@ export default function Header() {
           <Link href="/" className="block w-fit h-fit">
             <div className="flex flex-col justify-between h-full leading-tight">
               <div className="text-xs text-gray-500">Real Estate Agent</div>
-              <div className="filter_a text-small">공인중개사 사무소</div>
+              <div className="filter_a xs">공인중개사 사무소</div>
             </div>
           </Link>
         </div>
 
-        {/* 로그인 상태일 때 닉네임 및 로그아웃 버튼 영역 - 로고 오른쪽, 네비 위로 이동 */}
-        {!loading && user && (
-          <div
-            className="flex flex-col items-center bg-gray-100 border border-gray-300 rounded-lg px-4 py-1 min-w-[110px] shadow-md mr-6"
-            style={{ height: '52px' }} // 헤더 높이 맞춤
-          >
-            {/* 닉네임 영역: 사람 아이콘 + 닉네임 클릭 시 회원정보수정 페이지로 이동 */}
-            <button
-              onClick={() => router.push('/sign/profile')}
-              className="magT flex items-center text-gray-700 font-semibold max-w-[120px] truncate whitespace-nowrap overflow-hidden text-s text-center hover:text-orange-500 transition"
-              aria-label="회원정보 수정 페이지로 이동"
-              type="button"
-            >
-              <FaUser className="text-orange-500 mr-2 flex-shrink-0" />
-              <span>{user.nickname} 님</span>
-            </button>
-            <div className='h-1'></div>
-            {/* 로그아웃 버튼 */}
-            <button
-              onClick={handleLogout}
-              disabled={loggingOut}
-              className="bg-red-400 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm w-full "
-              style={{ minWidth: '100px' }}
-            >
-              {loggingOut ? '로그아웃 중...' : '로그아웃'}
-            </button>
-          </div>
-        )}
+       
 
         {/* 네비게이션 바 */}
         <nav className="w-full flex justify-end pr-4">
@@ -75,22 +48,26 @@ export default function Header() {
               flex-nowrap          /* 줄 바꿈 방지해서 메뉴가 한 줄에 유지되도록 */
               space-x-4
               gap-3
+              sm:gap-2
+              md:gap-9
               font-semibold
               text-sm               /* 기본 글자 크기 */
               sm:text-base          /* 화면이 sm 이상일 땐 기본 크기 */
               md:text-lg            /* md 이상에서는 글자 크기 좀 더 크게 */
               overflow-x-auto       /* 메뉴 길면 가로 스크롤 생김 */
               scrollbar-hide        /* 스크롤바 숨김 (플러그인 또는 스타일 적용 필요) */
+              
             "
           >
             <li>
-              <Link href="/">Home</Link>
+              <Link href="/" className='hover:text-red-500 transition'>Home</Link>
             </li>
             <li>
               <a
                 href="https://www.gwangjin.go.kr/portal/main/main.do"
                 target="_blank"
                 rel="noopener noreferrer"
+                className='hover:text-blue-500 transition'
               >
                 지역정보
               </a>
@@ -100,15 +77,16 @@ export default function Header() {
                 href="https://www.youtube.com/@ssangttabong"
                 target="_blank"
                 rel="noopener noreferrer"
+                className='hover:text-blue-500 transition'
               >
                 맛집정보
               </a>
             </li>
             <li>
-              <Link href="/posts">게시판</Link>
+              <Link href="/posts" className='hover:text-blue-500 transition'>게시판</Link>
             </li>
             <li>
-              <Link href="/about">About.</Link>
+              <Link href="/about" className='hover:text-blue-500 transition'>About.</Link>
             </li>
 
             {/* 관리자용 메뉴, admin role일 때만 노출, 빨간색 버튼 스타일 */}
@@ -122,22 +100,51 @@ export default function Header() {
                 </Link>
               </li>
             )}
+          
+              {/* 비로그인 상태일 때 로그인 / 회원가입 링크 */}
+              {!loading && !user && (
+                <>
+                  <li>
+                    |&nbsp;{' '}
+                    <Link className="filter_a text-xs md:text-lg" href="/sign/LoginForm">
+                      로그인
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="filter_a text-xs md:text-lg" href="/sign/SignupForm">
+                      회원가입
+                    </Link>
+                  </li>
+                </>
+              )}
 
-            {/* 비로그인 상태일 때 로그인 / 회원가입 링크 */}
-            {!loading && !user && (
-              <>
-                <li>
-                  |&nbsp;{' '}
-                  <Link className="filter_a font-bold" href="/sign/LoginForm">
-                    로그인
-                  </Link>
-                </li>
-                <li>
-                  <Link className="filter_a font-bold" href="/sign/SignupForm">
-                    회원가입
-                  </Link>
-                </li>
-              </>
+             {/* 로그인 상태일 때 닉네임 및 로그아웃 버튼 영역 - 로고 오른쪽, 네비 위로 이동 */}
+            {!loading && user && (
+              <div
+                className="magL flex flex-col items-center bg-gray-100 border border-gray-300 rounded-lg px-4 py-1 min-w-[90px] shadow-md mr-6"
+                style={{ height: '52px' }} // 헤더 높이 맞춤
+              >
+                {/* 닉네임 영역: 사람 아이콘 + 닉네임 클릭 시 회원정보수정 페이지로 이동 */}
+                <button
+                  onClick={() => router.push('/sign/profile')}
+                  className="magT flex items-center text-gray-700 font-semibold max-w-[120px] truncate whitespace-nowrap overflow-hidden text-s text-center hover:text-orange-500 transition"
+                  aria-label="회원정보 수정 페이지로 이동"
+                  type="button"
+                >
+                  <FaUser className="text-orange-500 mr-2 flex-shrink-0" />
+                  <span>{user.nickname} 님</span>
+                </button>
+                <div className='h-1'></div>
+                {/* 로그아웃 버튼 */}
+                <button
+                  onClick={handleLogout}
+                  disabled={loggingOut}
+                  className="bg-red-400 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm w-full "
+                  style={{ minWidth: '100px' }}
+                >
+                  {loggingOut ? '로그아웃 중...' : '로그아웃'}
+                </button>
+              </div>
             )}
           </ul>
         </nav>

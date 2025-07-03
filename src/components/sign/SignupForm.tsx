@@ -31,39 +31,38 @@ export default function SignupForm() {
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data: { user }, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        emailRedirectTo: 'https://ssangttabong.vercel.app/sign/callback', // 실제 존재하는 페이지 주소로 수정하세요
-      },
     });
 
-    if (error || !data.user) {
-      alert('회원가입 실패: ' + error?.message);
+    if (error) {
+      alert('회원가입 실패: ' + error.message);
       setLoading(false);
       return;
     }
 
-    const user = data.user;
+    if (user) {
+      await new Promise((res) => setTimeout(res, 1500));
 
-    const { error: profileError } = await supabase.from('profiles').insert([
-      {
-        id: user.id,
-        email,
-        nickname,
-        role: 'user',
-      },
-    ]);
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: user.id,
+          email: user.email,
+          nickname,
+          role: 'user',
+        });
 
-    if (profileError) {
-      alert('프로필 저장 실패: ' + profileError.message);
-      setLoading(false);
-      return;
+      if (profileError) {
+        alert('프로필 저장 실패: ' + profileError.message);
+      } else {
+        alert('회원가입 성공! 이메일을 확인한 후 로그인하세요.');
+        await supabase.auth.signOut();
+        router.push('/sign/LoginForm');
+      }
     }
 
-    alert('회원가입 성공! 인증 이메일을 확인해주세요.');
-    router.push('/sign/LoginForm');
     setLoading(false);
   };
 
@@ -77,8 +76,9 @@ export default function SignupForm() {
         회원가입
       </h2>
 
-      {/* 닉네임 입력 */}
-      <div>
+      <div className='h-5'></div>
+    <div className='container_lc'>
+      <div >
         <label htmlFor="nickname" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
           * 아이디
         </label>
@@ -92,7 +92,8 @@ export default function SignupForm() {
         />
       </div>
 
-      {/* 이메일 입력 */}
+      <div className='h-5'></div>
+
       <div>
         <label htmlFor="email" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
           * 이메일
@@ -107,10 +108,11 @@ export default function SignupForm() {
         />
       </div>
 
-      {/* 비밀번호 입력 */}
+      <div className='h-3'></div>
+
       <div>
         <label htmlFor="password" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
-          * 비밀번호
+         * 비밀번호
         </label>
         <input
           id="password"
@@ -122,7 +124,8 @@ export default function SignupForm() {
         />
       </div>
 
-      {/* 비밀번호 확인 */}
+      <div className='h-3'></div>
+
       <div className="relative">
         <label htmlFor="confirmPassword" className="block text-sm font-semibold text-var(--color-primary-dark) mb-2">
           * 비밀번호 확인
@@ -137,25 +140,28 @@ export default function SignupForm() {
         />
         {confirmPassword.length > 0 && (
           <span
-            className={`absolute top-11 right-4 text-sm font-semibold ${
+            className={`flex justify-end text-sm font-semibold ${
               passwordsMatch ? 'text-green-600' : 'text-red-600'
             }`}
           >
-            <div className="h-3"></div>
             {passwordsMatch ? '일치함' : '불일치'}
           </span>
         )}
       </div>
+    </div>  
 
-      <div className="flex justify-center">
-        <button
-          type="submit"
-          className="btn-login w-full bg-var(--color-primary) text-var(--color-background) py-4 px-8 rounded-lg font-semibold shadow-md hover:bg-var(--color-primary-dark) transition disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading}
-        >
-          {loading ? '회원가입 중...' : '회원가입'}
-        </button>
-      </div>
+    <div className='h-3'></div>  
+    
+    <div className='flex justify-center'>
+      <button
+        type="submit"
+        className="btn-login w-full bg-var(--color-primary) text-var(--color-background) py-4 px-8 rounded-lg font-semibold shadow-md hover:bg-var(--color-primary-dark) transition disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={loading}
+      >
+        {loading ? '회원가입 중...' : '회원가입'}
+      </button>
+    </div>    
+
     </form>
   );
 }

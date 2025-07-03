@@ -233,7 +233,7 @@ export default function ListingsPage({
         />
       </section>
 
-      <div className="h-3" />
+      <div className="h-7" />
 
       {/* 검색 및 정렬 바 */}
       <section className="w-full flex flex-wrap gap-10">
@@ -247,7 +247,7 @@ export default function ListingsPage({
         />
       </section>
 
-      <div className="h-3" />
+      <div className="h-10" />
 
       {/* 매물 그리드 컴포넌트에 필터링된 매물과 상태, 권한 전달 */}
       <ListingsGrid
