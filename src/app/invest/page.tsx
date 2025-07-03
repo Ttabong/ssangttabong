@@ -66,7 +66,7 @@ const options = {
     y: {
       beginAtZero: true,
       ticks: {
-        callback(this: Scale, value: string | number, index: number, ticks: Tick[]) {
+        callback(this: Scale, value: string | number) {
           return typeof value === 'number'
             ? value.toLocaleString() + '원'
             : value;
@@ -165,39 +165,40 @@ const getSmileImage = (rate: number) => {
 
         {/* 📈 우측 결과 및 차트 (70%) */}
         <div className="lg:col-span-6 space-y-6">
-       {/* 계산 결과 영역 */}
-            <div className="text-center flex items-center justify-center lg:justify-start gap-4">
-            <div>
-                <p className="magB text-base md:xl font-semibold text-green-600 mb-2">
+          {/* 계산 결과 + 수익률 표정 이미지 */}
+          <div className="flex items-center justify-center lg:justify-start gap-6">
+            {/* 결과 텍스트 */}
+            <div className="text-center lg:text-left">
+              <p className="text-base md:xl font-semibold text-green-600 mb-2">
                 🟢 예상 순수익: {netIncome.toLocaleString()} 원 / 연간
-                </p>
-                <p className="text-xl font-semibold text-blue-600">
+              </p>
+              <p className="text-xl font-semibold text-blue-600">
                 📈 예상 수익률: {returnRate.toFixed(2)}%
-                </p>
+              </p>
             </div>
 
-            {/* 넓은 화면용 스마일 이미지 (계산 결과 옆) */}
+            {/* 넓은 화면용 스마일 이미지 */}
             <div className="hidden lg:flex">
-                <Image
+              <Image
                 src={getSmileImage(returnRate)}
                 alt="수익률 표정"
-                width={100}
-                height={100}
+                width={80}
+                height={80}
                 className="rounded-full"
-                />
+              />
             </div>
-            </div>
+          </div>
 
-            {/* 좁은 화면용 스마일 이미지 (결과 하단 중앙) */}
-            <div className="flex lg:hidden justify-center mt-6">
+          {/* 좁은 화면용 스마일 이미지 (아래 중앙) */}
+          <div className="flex lg:hidden justify-center mt-4">
             <Image
-                src={getSmileImage(returnRate)}
-                alt="수익률 표정"
-                width={100}
-                height={100}
-                className="rounded-full"
+              src={getSmileImage(returnRate)}
+              alt="수익률 표정"
+              width={100}
+              height={100}
+              className="rounded-full"
             />
-            </div>
+          </div>
 
           <div className='h-5'/>
 
