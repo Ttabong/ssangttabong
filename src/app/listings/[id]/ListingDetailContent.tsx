@@ -1,120 +1,226 @@
-'use client';
+// 'use client'; // 서버 컴포넌트이므로 주석 유지
 
-import { useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import React from 'react';
+import supabase from '@/lib/supabaseClient';
+import { notFound } from 'next/navigation';
+import { formatKoreanPrice } from '@/utils/priceUtils';
+import Image from 'next/image';
+import AdminControls from '@/components/Listings/Update/AdminControls';
 
-// 차트 관련 필수 모듈 등록
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const defaultImage = '/default-image.jpg';
 
-export default function RealEstateSimulatorPage() {
-  // 입력값 상태 관리
-  const [price, setPrice] = useState<number>(0);
-  const [monthlyRent, setMonthlyRent] = useState<number>(0);
-  const [managementFee, setManagementFee] = useState<number>(0);
-  const [loanAmount, setLoanAmount] = useState<number>(0);
-  const [loanInterest, setLoanInterest] = useState<number>(0);
-  const [vacancyRate, setVacancyRate] = useState<number>(0);
-  const [otherCost, setOtherCost] = useState<number>(0);
+type ListingDetailContentProps = {
+  id: string;
+};
 
-  // 계산 로직
-  const annualRent = monthlyRent * 12 * (1 - vacancyRate / 100);
-  const annualManagement = managementFee * 12;
-  const annualLoanInterest = loanAmount * (loanInterest / 100);
-  const netIncome = annualRent - annualManagement - annualLoanInterest - otherCost;
-  const returnRate = price > 0 ? (netIncome / price) * 100 : 0;
+// 평수 계산 함수 (1평 = 3.3058㎡)
+function toPyeong(sqm: number | null | undefined): string {
+  if (!sqm || isNaN(sqm)) return '-';
+  return (sqm / 3.3058).toFixed(2);
+}
 
-  // 차트 데이터
-  const data = {
-    labels: ['월세수입', '관리비', '대출이자', '기타비용', '순수익'],
-    datasets: [
-      {
-        label: '금액 (원)',
-        data: [annualRent, annualManagement, annualLoanInterest, otherCost, netIncome],
-        backgroundColor: [
-          '#4ade80', // 초록
-          '#f87171', // 빨강
-          '#facc15', // 노랑
-          '#93c5fd', // 파랑
-          '#3b82f6', // 진파랑
-        ],
-      },
+// 사용자 역할 확인 함수 (AdminControls용)
+export async function getUserRole() {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) return null;
+
+  const { data: userData, error: profileError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (profileError || !userData) return null;
+  return userData.role;
+}
+
+// 상세 매물 컴포넌트
+export default async function ListingDetailContent({ id }: ListingDetailContentProps) {
+  const { data, error } = await supabase.from('listings').select('*').eq('id', id).single();
+  if (error || !data) return notFound();
+
+  const imageList = [
+    data.image_url_1,
+    data.image_url_2,
+    data.image_url_3,
+    data.image_url_4,
+    data.image_url_5,
+    data.image_url_6,
+  ].filter(Boolean);
+  while (imageList.length < 6) imageList.push(defaultImage);
+
+  const usageText =
+    data.usage === '기타' && data.usage_extra
+      ? `기타/${data.usage_extra}`
+      : data.usage ?? '-';
+
+  const details: [string, React.ReactNode][] = [
+    ['거래유형', data.type ?? '-'],
+    ['용도', usageText],
+    [
+      '가격',
+      (() => {
+        if (data.type === '매매' && data.price) {
+          return formatKoreanPrice(Number(data.price)) + ' 원';
+        }
+        if (data.type === '전세' && data.deposit) {
+          return formatKoreanPrice(Number(data.deposit)) + ' 원';
+        }
+        if (data.type === '월세' && data.deposit && data.monthly) {
+          return `${formatKoreanPrice(Number(data.deposit))} 원 / ${formatKoreanPrice(Number(data.monthly))} 원`;
+        }
+        return '-';
+      })(),
     ],
-  };
+    [
+      '관리비',
+      <div key="maintenance" className="flex items-center h-full">
+        <span className="filter_a text-sm text-gray-700">
+          {data.maintenance_fee ?? '-'}
+        </span>
+      </div>
+    ],
+    [
+      '면적',
+      <>
+        <div key="area">
+          {data.area_supply ?? '-'} ㎡ / {data.area_private ?? '-'} ㎡ <br />
+          ({toPyeong(data.area_supply)} 평 / {toPyeong(data.area_private)} 평)
+        </div>
+      </>
+    ],
+    ['층수 / 총층수', `${data.floor ?? '-'}층 / ${data.total_floors ?? data.total_floor ?? '-'}층`],
+    ['방향', `${data.direction ?? '-'}${data.direction_base ? ` (${data.direction_base}기준)` : ''}`],
+    ['방 수 / 욕실 수', `${data.room_count ?? '-'}개 / ${data.bathrooms ?? '-'}개`],
+    [
+      '주차',
+      <>
+        <div key="parking">
+          <span>{data.parking ? '가능' : '불가'}</span><br />
+          <span className="pl-6">
+            세대 당 ({data.parking_count ?? 0}대) / 총 ({data.all_parking ?? 0}대)
+          </span>
+        </div>
+      </>
+    ],
+    ['총 세대수', data.households ?? '-'],
+    ['사용승인일', data.approval_date ? new Date(data.approval_date).toLocaleDateString('ko-KR') : '-'],
+    ['애완동물', data.pet_allowed ? '가능' : '불가'],
+    [
+      '융자금',
+      data.loan_amount === null || data.loan_amount === ''
+        ? '표시하지 않음'
+        : Number(data.loan_amount) === 0
+        ? '융자금 없음'
+        : `${formatKoreanPrice(data.loan_amount)} 원`,
+    ],
+    
+    ['발코니', data.balcony === null || data.balcony === '' ? '해당 없음' : data.balcony],
+    ['난방 / 연료', `${data.warmerType ?? '-'} / ${data.warmer ?? '-'}`],
+    
+    [
+      '입주가능일',
+      data.available_date
+        ? new Date(data.available_date).toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          })
+        : '-',
+    ],
+    ['임대 현황', data.lease_status ?? '-'],
 
-  // 차트 옵션
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' as const },
-      title: {
-        display: true,
-        text: '부동산 투자 수익 구성 (연간 기준)',
-        font: { size: 16 },
-      },
-    },
-  };
+  ];
 
   return (
-    <main className="container mx-auto p-6">
-      {/* 타이틀 헤더 */}
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-extrabold text-sky-400 drop-shadow-md">
-          💸 부동산 투자 수익 시뮬레이터
-        </h1>
-        <p className="text-gray-500 mt-2">입력값에 따라 수익률을 시각적으로 확인해보세요!</p>
-      </div>
+<main className="container mx-auto p-4">
+  {/* 헤더 */}
+  <div className="text-center mb-10">
+    <h1 className="filter_a text-4xl font-extrabold text-sky-400 drop-shadow-md">상세 매물 정보</h1>
+    <br />
+    <p className="text-gray-500 text-base sm:text-s md:text-lg">더욱 상세한 정보를 원하시면 언제든지 연락주세요 ^^</p>
+    <p className='h-10'></p>
+  </div>
 
-      {/* 입력 폼 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/60 p-6 rounded-lg shadow mb-10">
-        {[
-          { id: 'price', label: '매매가 (원)', value: price, setter: setPrice },
-          { id: 'monthlyRent', label: '월세 수입 (원)', value: monthlyRent, setter: setMonthlyRent },
-          { id: 'managementFee', label: '관리비 (원)', value: managementFee, setter: setManagementFee },
-          { id: 'loanAmount', label: '대출금액 (원)', value: loanAmount, setter: setLoanAmount },
-          { id: 'loanInterest', label: '대출 이자율 (%)', value: loanInterest, setter: setLoanInterest },
-          { id: 'vacancyRate', label: '공실률 (%)', value: vacancyRate, setter: setVacancyRate },
-          { id: 'otherCost', label: '기타 비용 (연간, 원)', value: otherCost, setter: setOtherCost },
-        ].map(({ id, label, value, setter }) => (
-          <div key={id}>
-            <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
-              {label}
-            </label>
-            <input
-              id={id}
-              type="number"
-              min="0"
-              value={value === 0 ? '' : value}
-              onChange={(e) => setter(Number(e.target.value))}
-              className="w-full px-3 py-2 border rounded-md shadow-sm"
-              placeholder="숫자를 입력하세요"
+   {/* 제목 */}  
+
+  <span className="text-xl md:text-2xl font-bold text-gray-400">[no.{data.id_num}] &nbsp;</span>  
+  <span className="text-2xl md:text-3xl font-bold text-orange-400">  {data.title}</span>
+
+  <div className='h-7'></div>
+
+  {/* 설명 */}
+  <section className="w-full">
+    <h2 className="filter_a text-xl font-semibold mb-2 text-yellow-400">□ 매물설명</h2>
+    <div className='h-3'></div>
+    <p className="whitespace-pre-wrap text-xl overflow-auto max-h-32 border-b border-gray-300 pb-1">
+      &nbsp;&nbsp; {data.description ?? '설명 없음'}
+    </p>
+
+    <div className='h-7'></div>
+  </section>
+
+  {/* 본문 (이미지 + 설명) */}
+  <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+
+    {/* 이미지 영역 */}
+    <div className="padT w-full lg:w-[58%] flex flex-col gap-6 h-full order-1">
+      <div className="grid grid-cols-2 grid-rows-3 gap-4">
+        {imageList.map((src, idx) => (
+          <div key={idx} className="relative w-full" style={{ paddingBottom: '73%' }}>
+            <Image
+              src={src}
+              alt={`매물 사진 ${idx + 1}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              style={{ objectFit: 'cover' }}
+              className="rounded-md"
+              priority
             />
           </div>
         ))}
       </div>
+    </div>
 
-      {/* 계산 결과 */}
-      <div className="text-center mb-8">
-        <p className="text-xl font-semibold text-green-600 mb-2">
-          🟢 예상 순수익: {netIncome.toLocaleString()} 원 / 연간
-        </p>
-        <p className="text-xl font-semibold text-blue-600">
-          📈 예상 수익률: {returnRate.toFixed(2)}%
-        </p>
-      </div>
+    {/* 설명 영역 */}
+    <div className="w-full lg:w-[42%] backdrop-blur-md p-6 rounded-md bg-white/10 h-full order-2">
+      <div className="flex flex-col gap-1 h-full">
+       
+        {/* 소재지 */}
+        <section className="w-full rounded-t-sm p-4">
+          <h2 className="text-gray-600 text-xl font-bold mb-2">● 소재지</h2>
+          <p className="filter_a whitespace-pre-wrap font-bold overflow-auto max-h-32">
+            {[data.location_1, data.location_2, data.location_3, data.location_4, data.location_5]
+              .filter(Boolean)
+              .join(' ') || '주소 정보 없음'}
+          </p>
+        </section>
 
-      {/* 차트 */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <Bar options={options} data={data} />
+        <div className='h-3'></div>
+
+        {/* 상세 항목 */}
+        {details.map(([label, value], i) => (
+          <div
+            key={i}
+            className="flex justify-between items-center rounded-md bg-white/5 border border-gray-200 "
+          >
+            <span className="padL proD font-semibold text-l text-gray-500 whitespace-nowrap "> ● &nbsp;  {label}</span>
+            <span className="padR proD filter_a text-right text-l text-blue-400 break-words max-w-full">{value}</span>
+          </div>
+        ))}
+
+        {/* 관리자 버튼 */}
+        <div className="flex justify-end mt-4">
+          <AdminControls listingId={id} />
+        </div>
       </div>
-    </main>
+    </div>
+  </div>
+</main>
+
   );
 }
