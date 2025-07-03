@@ -71,7 +71,7 @@ export default function Home() {
         <div className="h-5" />
 
 
-          <div className="grid grid-cols-3 gap-3 max-w-screen-xl mx-auto md:grid-cols-3 md:auto-rows-fr">
+          <div className="grid grid-cols-3 sm:grid-cols-1 gap-3 max-w-screen-xl mx-auto md:grid-cols-3 md:auto-rows-fr">
 
 
           <Link href="/lotto">
