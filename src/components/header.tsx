@@ -40,23 +40,21 @@ export default function Header() {
        
 
         {/* 네비게이션 바 */}
-        <nav className="w-full flex justify-end pr-4">
+        <nav className="w-full overflow-x-auto flex justify-end">
           <ul
             className="
               header-inner
               flex
               flex-nowrap          /* 줄 바꿈 방지해서 메뉴가 한 줄에 유지되도록 */
               space-x-4
-              gap-3
-              sm:gap-2
+              gap-1.5
               md:gap-9
               font-semibold
               text-sm               /* 기본 글자 크기 */
-              sm:text-base          /* 화면이 sm 이상일 땐 기본 크기 */
               md:text-lg            /* md 이상에서는 글자 크기 좀 더 크게 */
               overflow-x-auto       /* 메뉴 길면 가로 스크롤 생김 */
               scrollbar-hide        /* 스크롤바 숨김 (플러그인 또는 스타일 적용 필요) */
-              
+              min-w-0
             "
           >
             <li>
@@ -88,6 +86,7 @@ export default function Header() {
             <li>
               <Link href="/about" className='hover:text-blue-500 transition'>About.</Link>
             </li>
+
 
             {/* 관리자용 메뉴, admin role일 때만 노출, 빨간색 버튼 스타일 */}
             {user?.role === 'admin' && (

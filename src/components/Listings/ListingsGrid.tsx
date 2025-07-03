@@ -67,6 +67,7 @@ export default function ListingsGrid({
   }
 
   return (
+  
     <section className="padT w-full grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
       {listings.map((item) => (
         <div

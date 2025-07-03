@@ -73,6 +73,13 @@ body {
   padding-bottom: 1rem;
 }
 
+.container_i {
+  width: 70%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 1rem;
+}
+
 .container_b {
   width: 90%;
   max-width: 1200px;
