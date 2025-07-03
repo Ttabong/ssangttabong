@@ -47,10 +47,10 @@ export default function Header() {
               flex
               flex-nowrap          /* 줄 바꿈 방지해서 메뉴가 한 줄에 유지되도록 */
               space-x-4
-              gap-1.5
+              gap-3
               md:gap-9
               font-semibold
-              text-sm               /* 기본 글자 크기 */
+              text-base               /* 기본 글자 크기 */
               md:text-lg            /* md 이상에서는 글자 크기 좀 더 크게 */
               overflow-x-auto       /* 메뉴 길면 가로 스크롤 생김 */
               scrollbar-hide        /* 스크롤바 숨김 (플러그인 또는 스타일 적용 필요) */
@@ -60,7 +60,7 @@ export default function Header() {
             <li>
               <Link href="/" className='hover:text-red-500 transition'>Home</Link>
             </li>
-            <li>
+         {/*}   <li>
               <a
                 href="https://www.gwangjin.go.kr/portal/main/main.do"
                 target="_blank"
@@ -69,8 +69,8 @@ export default function Header() {
               >
                 지역정보
               </a>
-            </li>
-            <li>
+            </li> */}
+            <li> 
               <a
                 href="https://www.youtube.com/@ssangttabong"
                 target="_blank"
