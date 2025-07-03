@@ -96,7 +96,7 @@ export default function Home() {
 
           <Link href="/">
             <Image
-              src="/images/ing.jpg"
+              src="/images/ad.jpg"
               alt="준비중"
               width={600}
               height={300}

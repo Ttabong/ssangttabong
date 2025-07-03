@@ -35,7 +35,7 @@ type CheckboxInputProps = {
             checked={checked}
             onChange={onChange} // 부모 상태 업데이트용
             required={required}
-            className="w-4 h-4 text-blue-600 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
+            className="padL w-4 h-4 text-blue-600 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
         />
 
         {/* 라벨 */}
