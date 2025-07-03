@@ -12,7 +12,7 @@ import {
   Legend,
 } from 'chart.js';
 import { formatKoreanPrice } from '@/utils/priceUtils'; // 꼭 경로 확인해주세요
-import { Scale, Tick } from 'chart.js';
+import { Scale } from 'chart.js';
 import Image from 'next/image';
 
 // Chart.js 필수 모듈 등록
