@@ -12,12 +12,13 @@ export default async function ListingDetailPage({ params }: ListingDetailPagePro
 
 // app/listings/edit/[id]/page.tsx
 
-import ListingDetailContent from '@/app/listings/[id]/ListingDetailContent';  // 경로는 실제 위치에 맞게 조정
+import ListingDetailContent from '@/app/listings/[id]/ListingDetailContent';
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export default function ListingDetailPage({ params }: Props) {
-  return <ListingDetailContent id={params.id} />;
+export default async function ListingDetailPage({ params }: Props) {
+  const resolvedParams = await params;
+  return <ListingDetailContent id={resolvedParams.id} />;
 }

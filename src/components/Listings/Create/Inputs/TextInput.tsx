@@ -47,7 +47,7 @@ export default function TextInput({
         placeholder={placeholder}
         required={required}
         onChange={onChange}
-        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="padL w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
     </div>
   );

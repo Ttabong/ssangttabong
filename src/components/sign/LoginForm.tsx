@@ -81,7 +81,7 @@ export default function LoginForm() {
       type="email"
       value={email}
       onChange={(e) => setEmail(e.target.value)}
-      className="w-full text-sm px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm
+      className="padL w-full text-sm px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm
                  focus:outline-none focus:ring-2 focus:ring-var(--color-primary) focus:border-transparent
                  transition"
       required
@@ -92,7 +92,7 @@ export default function LoginForm() {
   <div className='container_lc' >
     <label
       htmlFor="password"
-      className="block text-sm font-semibold text-var(--color-primary-dark) mb-2"
+      className="padL block text-sm font-semibold text-var(--color-primary-dark) mb-2"
     >
       * 비밀번호
     </label>
@@ -101,7 +101,7 @@ export default function LoginForm() {
       type="password"
       value={password}
       onChange={(e) => setPassword(e.target.value)}
-      className="w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm
+      className="padL w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm
                  focus:outline-none focus:ring-2 focus:ring-var(--color-primary) focus:border-transparent
                  transition"
       required

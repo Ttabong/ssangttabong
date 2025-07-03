@@ -57,10 +57,10 @@ export default function ImageUploader({ onUpload }: Props) {
         accept="image/*"
         onChange={handleFileChange}
         disabled={uploading}
-        className="border border-gray-300 rounded p-2 w-full"
+        className="padL border border-gray-300 rounded p-2 w-full"
       />
-      {uploading && <p className="text-blue-600 mt-2">업로드 중...</p>}
-      {errorMsg && <p className="text-red-600 mt-2">에러: {errorMsg}</p>}
+      {uploading && <p className="padL text-blue-600 mt-2">업로드 중...</p>}
+      {errorMsg && <p className="padL text-red-600 mt-2">에러: {errorMsg}</p>}
     </div>
   );
 }
