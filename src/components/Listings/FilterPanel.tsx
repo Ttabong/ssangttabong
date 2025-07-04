@@ -80,7 +80,7 @@ export default function FilterPanel({
         {!hideUsage && (
           <div className="space-y-2">
             <p className="filter_a text-lg font-bold text-gray-700">◈ 용도</p>
-            <div className="flex flex-wrap text-sm md:text-lg gap-2 items-center">
+            <div className="flex flex-wrap text-xs sm:text-base md:text-lg gap-2 items-center">
               {USAGE_TYPES.map((usage) => (
                 <label key={usage} className="inline-flex items-center gap-1 cursor-pointer">
                   <input
@@ -100,7 +100,7 @@ export default function FilterPanel({
         <div className="space-y-2">
           <p className="filter_a text-lg font-bold text-gray-700">◈ 주차 여부</p>
           <div className="flex gap-2 items-center">
-            <label className="inline-flex items-center gap-2 cursor-pointer">
+            <label className="inline-flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
                 name="parking"
@@ -111,7 +111,7 @@ export default function FilterPanel({
               전체
             </label>
             {PARKING_OPTIONS.map((option) => (
-              <label key={option} className="inline-flex items-center gap-2 cursor-pointer">
+              <label key={option} className="inline-flex items-center gap-1 cursor-pointer">
                 <input
                   type="radio"
                   name="parking"

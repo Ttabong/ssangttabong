@@ -58,14 +58,14 @@ export default function Header() {
             "
           >
             <li>
-              <Link href="/" className='hover:text-red-500 transition'>Home</Link>
+              <Link href="/" className='text-sm md:text-lg transitionhover:text-red-500 transition'>Home</Link>
             </li>
          {/*}   <li>
               <a
                 href="https://www.gwangjin.go.kr/portal/main/main.do"
                 target="_blank"
                 rel="noopener noreferrer"
-                className='hover:text-blue-500 transition'
+                className='text-sm md:text-lg hover:text-blue-500 transition'
               >
                 지역정보
               </a>
@@ -75,16 +75,16 @@ export default function Header() {
                 href="https://www.youtube.com/@ssangttabong"
                 target="_blank"
                 rel="noopener noreferrer"
-                className='hover:text-blue-500 transition'
+                className='text-sm md:text-lg hover:text-blue-500 transition'
               >
                 맛집정보
               </a>
             </li>
             <li>
-              <Link href="/posts" className='hover:text-blue-500 transition'>게시판</Link>
+              <Link href="/posts" className='text-sm md:text-lg hover:text-blue-500 transition'>게시판</Link>
             </li>
             <li>
-              <Link href="/about" className='hover:text-blue-500 transition'>About.</Link>
+              <Link href="/about" className='text-sm md:text-lg hover:text-blue-500 transition'>About.</Link>
             </li>
 
 
