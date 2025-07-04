@@ -140,7 +140,7 @@ export default function FilterPanel({
               전체
             </label>
             {PET_ALLOWED_OPTIONS.map((option) => (
-              <label key={option} className="inline-flex items-center gap-2 cursor-pointer">
+              <label key={option} className="inline-flex items-center gap-1 cursor-pointer">
                 <input
                   type="radio"
                   name="pet"
