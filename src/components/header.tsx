@@ -88,17 +88,7 @@ export default function Header() {
             </li>
 
 
-            {/* 관리자용 메뉴, admin role일 때만 노출, 빨간색 버튼 스타일 */}
-            {user?.role === 'admin' && (
-              <li>
-                <Link
-                  href="/listings/create"
-                  className="btn-loginR text-center transition"
-                >
-                  물건등록
-                </Link>
-              </li>
-            )}
+
           
               {/* 비로그인 상태일 때 로그인 / 회원가입 링크 */}
               {!loading && !user && (
@@ -145,6 +135,20 @@ export default function Header() {
                 </button>
               </div>
             )}
+
+            {/* 관리자용 메뉴, admin role일 때만 노출, 빨간색 버튼 스타일 */}
+            {user?.role === 'admin' && (
+              <li>
+                <Link
+                  href="/listings/create"
+                  className="btn-loginR text-center transition"
+                >
+                  물건등록
+                </Link>
+              </li>
+            )}
+
+
           </ul>
         </nav>
       </div>
