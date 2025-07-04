@@ -60,7 +60,7 @@ export default function FilterPanel({
         {/* 거래 유형 */}
         <div className="space-y-2">
           <p className="filter_a text-lg font-bold text-gray-700">◈ 거래 유형</p>
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex flex-wrap gap-3 items-center">
             {['전체', '매매', '전세', '월세'].map((type) => (
               <label key={type} className="inline-flex items-center gap-2 cursor-pointer">
                 <input
@@ -80,7 +80,7 @@ export default function FilterPanel({
         {!hideUsage && (
           <div className="space-y-2">
             <p className="filter_a text-lg font-bold text-gray-700">◈ 용도</p>
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="flex flex-wrap text-sm md:text-lg gap-2 items-center">
               {USAGE_TYPES.map((usage) => (
                 <label key={usage} className="inline-flex items-center gap-1 cursor-pointer">
                   <input

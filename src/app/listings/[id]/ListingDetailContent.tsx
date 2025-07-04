@@ -79,7 +79,7 @@ export default async function ListingDetailContent({ id }: ListingDetailContentP
     [
       '관리비',
       <div key="maintenance" className="flex items-center h-full">
-        <span className="filter_a text-sm text-gray-700">
+        <span className="filter_a text-xs text-gray-700">
           {data.maintenance_fee ?? '-'}
         </span>
       </div>
