@@ -129,7 +129,7 @@ export default function FilterPanel({
         <div className="space-y-2">
           <p className="filter_a text-lg font-bold text-gray-700">◈ 애완동물</p>
           <div className="flex gap-2 items-center">
-            <label className="inline-flex items-center gap-2 cursor-pointer">
+            <label className="inline-flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
                 name="pet"

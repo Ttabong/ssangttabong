@@ -40,12 +40,12 @@ export default function LoginForm() {
       console.error('[로그인 실패]', error.message);
 
       if (error.message === 'Email not confirmed') {
-        setError('이메일 인증이 필요합니다. 받은 메일(스팸함 포함)을 확인하세요.');
+        setError('이메일 인증이 필요합니다. \n 받은 메일(스팸함 포함)을 확인하세요.');
         setNeedEmailConfirm(true); // 재전송 버튼 표시
       } else if (error.message === 'Invalid login credentials') {
         setError('잘못된 이메일 또는 비밀번호입니다.');
       } else {
-        setError('로그인에 실패했습니다. 다시 시도해주세요.');
+        setError('로그인에 실패했습니다. \n 다시 시도해주세요.');
       }
 
       setLoading(false);

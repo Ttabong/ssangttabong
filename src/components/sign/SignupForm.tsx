@@ -57,7 +57,7 @@ export default function SignupForm() {
       if (profileError) {
         alert('프로필 저장 실패: ' + profileError.message);
       } else {
-        alert('회원가입 성공! 이메일을 확인한 후 로그인하세요.');
+        alert('회원가입 성공! \n 이메일을 확인한 후 로그인하세요.');
         await supabase.auth.signOut();
         router.push('/sign/LoginForm');
       }
