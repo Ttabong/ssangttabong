@@ -135,7 +135,7 @@ export default function Header() {
                 </button>
               </div>
             )}
-
+          <div className=''>
             {/* 관리자용 메뉴, admin role일 때만 노출, 빨간색 버튼 스타일 */}
             {user?.role === 'admin' && (
               <li>
@@ -148,6 +148,17 @@ export default function Header() {
               </li>
             )}
 
+            {user?.role === 'admin' && (
+              <li>
+                <Link
+                  href="/admin/users"
+                  className="btn-login text-center transition"
+                >
+                  회원관리
+                </Link>
+              </li>
+            )}
+          </div>
 
           </ul>
         </nav>
