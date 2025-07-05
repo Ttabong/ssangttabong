@@ -139,17 +139,15 @@ export default function AdminUserPage() {
     return matchesSearch && matchesRole && matchesDeleted;
   });
 
-  if (loading) return <div className="p-4">로딩 중...</div>;
+  if (loading) return <div className="p-4 text-sm sm:text-base md:text-lg lg:text-xl">로딩 중...</div>;
 
   return (
-    <div className="container p-6 max-w-6xl mx-auto space-y-6">
-      <h1 className="filter_a text-3xl font-bold">회원 관리</h1>
+    <div className="container p-6 max-w-6xl mx-auto space-y-6 text-sm sm:text-base md:text-lg lg:text-xl">
+      <h1 className="filter_a font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl">회원 관리</h1>
 
       <div className='h-10' />
 
-      <div className="bg-gray-100 rounded-lg p-4 flex justify-start text-sm sm:text-base">
-
-
+      <div className="bg-gray-100 rounded-lg p-4 flex justify-start text-xs sm:text-sm md:text-base lg:text-lg">
         <div>
           Today: <strong>{todayViews?.toLocaleString()}</strong>
         </div>
@@ -164,7 +162,7 @@ export default function AdminUserPage() {
       <div className='h-5' />
 
       {/* 검색 및 필터 */}
-      <div className="flex flex-wrap gap-2 text-sm sm:text-base">
+      <div className="flex flex-wrap gap-2 text-xs sm:text-sm md:text-base lg:text-lg">
         <input
           type="text"
           placeholder=" 닉네임 또는 이메일 검색"
@@ -192,10 +190,10 @@ export default function AdminUserPage() {
         </select>
       </div>
 
-      <div className='h-3' />  
+      <div className='h-3' />
 
       {/* 유저 테이블 */}
-      <table className="w-full border text-sm sm:text-base">
+      <table className="w-full border text-xs sm:text-sm md:text-base lg:text-lg">
         <thead>
           <tr className="bg-gray-200 text-center">
             <th className="p-2">닉네임</th>
@@ -218,7 +216,7 @@ export default function AdminUserPage() {
                 <select
                   value={u.role}
                   onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                  className="border rounded px-2 py-1 text-sm"
+                  className="border rounded px-2 py-1 text-xs sm:text-sm md:text-base lg:text-lg"
                 >
                   <option value="user">user</option>
                   <option value="admin">admin</option>
@@ -229,14 +227,14 @@ export default function AdminUserPage() {
               <td className="p-2">
                 {u.is_deleted ? (
                   <button
-                    className="text-green-600 underline"
+                    className="text-green-600 underline text-xs sm:text-sm md:text-base lg:text-lg"
                     onClick={() => handleRecover(u.id)}
                   >
                     복구
                   </button>
                 ) : (
                   <button
-                    className="text-red-600 underline"
+                    className="text-red-600 underline text-xs sm:text-sm md:text-base lg:text-lg"
                     onClick={() => handleForceDelete(u.id)}
                   >
                     강제 탈퇴
@@ -261,7 +259,7 @@ export default function AdminUserPage() {
               {/* 완전 삭제 버튼 */}
               <td className="p-2">
                 <button
-                  className="text-red-500 hover:underline"
+                  className="text-red-500 hover:underline text-xs sm:text-sm md:text-base lg:text-lg"
                   onClick={() => handleHardDelete(u.id)}
                 >
                   완전 삭제
