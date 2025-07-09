@@ -1,11 +1,32 @@
+'use client'; // 클라이언트 컴포넌트로 지정해야 useEffect, supabase 사용 가능
+
+import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import supabase from '@/lib/supabaseClient';
 
 export default function Home() {
+  useEffect(() => {
+    // 페이지에 진입하면 site_views 테이블에 방문 기록을 남깁니다
+    const logSiteView = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+
+      if (user) {
+        // 로그인된 사용자라면 user_id와 함께 viewed_at 삽입
+        await supabase.from('site_views').insert({
+          user_id: user.id,
+          viewed_at: new Date(),
+        });
+      }
+    };
+
+    logSiteView();
+  }, []);
+
   return (
     <>
       <main className="container_m">
-
+        {/* 히어로 배너 영역 */}
         <section
           className="hero text-center relative overflow-hidden"
           style={{
@@ -24,18 +45,15 @@ export default function Home() {
               &nbsp;만족을 약속합니다
             </h2>
 
-        {/*    <p className="mb-6 text-lg">어떤 물건을 찾고 계신가요?</p>  */}
-          
-
             <Link href="/listings" className="hero_b inline-block">
               전체매물 둘러보기
             </Link>
           </div>
         </section>
 
+        {/* 매물 카테고리 카드 */}
         <section id="products" className="products-section flex flex-wrap bg-gray-50 py-12 rounded-xl items-center">
-          <div className="grid grid-cols-3 gap-3 max-w-screen-xl mx-auto
-                          md:grid-cols-6 md:auto-rows-fr">
+          <div className="grid grid-cols-3 gap-3 max-w-screen-xl mx-auto md:grid-cols-6 md:auto-rows-fr">
             {[
               { title: "원 / 투룸", image: "/images/broom.jpg", href: "/listings/onetwo" },
               { title: "아파트", image: "/images/apart.jpg", href: "/listings/apart" },
@@ -50,7 +68,7 @@ export default function Home() {
                 className="cBox group relative rounded-3xl overflow-hidden bg-white shadow-2xl hover:shadow-xl transition transform hover:scale-105"
               >
                 <article className="flex flex-col">
-                  <div className=" overflow-hidden border border-blue-400 rounded-t-3xl w-full h-30">
+                  <div className="overflow-hidden border border-blue-400 rounded-t-3xl w-full h-30">
                     <Image
                       src={image}
                       alt={`${title} 이미지`}
@@ -70,10 +88,8 @@ export default function Home() {
 
         <div className="h-5" />
 
-
-          <div className="pad flex items-center grid sm:grid-cols-1 gap-3 max-w-screen-xl mx-auto md:grid-cols-3 md:auto-rows-fr">
-
-
+        {/* 부가 기능 링크 이미지 */}
+        <div className="pad flex items-center grid sm:grid-cols-1 gap-3 max-w-screen-xl mx-auto md:grid-cols-3 md:auto-rows-fr">
           <Link href="/lotto">
             <Image
               src="/images/lottoLink.jpg"
@@ -103,8 +119,7 @@ export default function Home() {
               className="hero mx-auto cursor-pointer hover:scale-105 transition-transform"
             />
           </Link>
-
-          </div>
+        </div>
       </main>
     </>
   );
