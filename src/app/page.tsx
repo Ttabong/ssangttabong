@@ -9,7 +9,7 @@ export default function Home() {
   useEffect(() => {
     // 페이지에 진입하면 site_views 테이블에 방문 기록을 남깁니다
     const logSiteView = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {
         // 로그인된 사용자라면 user_id와 함께 viewed_at 삽입

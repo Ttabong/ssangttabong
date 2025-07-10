@@ -32,14 +32,12 @@ export default function AdminUserPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        //console.log('방문 기록 삽입 시도...');
-        const { data: insertData, error: insertError } = await supabase
+        // 방문 기록 삽입 시도 (insertData 제거, error는 insertError로 받고 사용)
+        const { error: insertError } = await supabase
           .from('site_views')
           .insert({});
         if (insertError) {
           console.error('방문 기록 삽입 실패:', insertError);
-        } else {
-       //   console.log('방문 기록 삽입 성공:', insertData);
         }
 
         // 로그인된 유저 확인
@@ -53,7 +51,6 @@ export default function AdminUserPage() {
           router.push('/');
           return;
         }
-        //console.log('로그인된 유저:', user);
 
         // 관리자 권한 확인
         const { data: profile, error: profileError } = await supabase
@@ -72,7 +69,6 @@ export default function AdminUserPage() {
           router.push('/');
           return;
         }
-        //console.log('관리자 프로필:', profile);
 
         // 유저 목록 (profiles_with_login 뷰)
         const { data: allProfiles, error: profilesError } = await supabase
@@ -84,7 +80,6 @@ export default function AdminUserPage() {
           console.error('유저 목록 조회 실패:', profilesError);
           setUsers([]);
         } else {
-          //console.log('유저 목록 조회 성공:', allProfiles);
           setUsers(allProfiles || []);
         }
 
@@ -95,7 +90,6 @@ export default function AdminUserPage() {
         if (totalError) {
           console.error('전체 방문자 수 조회 실패:', totalError);
         } else {
-          //console.log('전체 방문자 수:', total);
           setTotalViews(total || 0);
         }
 
@@ -105,7 +99,6 @@ export default function AdminUserPage() {
         const kstOffset = 9 * 60; // 분 단위
         const utc = today.getTime() + today.getTimezoneOffset() * 60000;
         const kstTime = new Date(utc + kstOffset * 60000);
-        //console.log('한국 시간 기준 오늘 0시 ISO:', kstTime.toISOString());
 
         const { count: todayCount, error: todayError } = await supabase
           .from('site_views')
@@ -115,7 +108,6 @@ export default function AdminUserPage() {
         if (todayError) {
           console.error('오늘 방문자 수 조회 실패:', todayError);
         } else {
-         // console.log('오늘 방문자 수:', todayCount);
           setTodayViews(todayCount || 0);
         }
       } catch (err) {
@@ -130,7 +122,6 @@ export default function AdminUserPage() {
 
   // 권한 변경
   const handleRoleChange = async (id: string, newRole: string) => {
-    //console.log(`권한 변경 시도: id=${id}, newRole=${newRole}`);
     const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', id);
     if (error) {
       console.error('권한 변경 실패:', error);
@@ -138,13 +129,11 @@ export default function AdminUserPage() {
       setUsers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, role: newRole } : u))
       );
-      //console.log('권한 변경 성공:', id, newRole);
     }
   };
 
   // 복구 (Soft Delete 해제)
   const handleRecover = async (id: string) => {
-    //console.log(`복구 시도: id=${id}`);
     const { error } = await supabase.from('profiles').update({ is_deleted: false }).eq('id', id);
     if (error) {
       console.error('복구 실패:', error);
@@ -152,13 +141,11 @@ export default function AdminUserPage() {
       setUsers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, is_deleted: false } : u))
       );
-      console.log('복구 성공:', id);
     }
   };
 
   // 강제 탈퇴 (Soft Delete 적용)
   const handleForceDelete = async (id: string) => {
-    //console.log(`강제 탈퇴 시도: id=${id}`);
     const { error } = await supabase.from('profiles').update({ is_deleted: true }).eq('id', id);
     if (error) {
       console.error('강제 탈퇴 실패:', error);
@@ -166,20 +153,15 @@ export default function AdminUserPage() {
       setUsers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, is_deleted: true } : u))
       );
-      console.log('강제 탈퇴 성공:', id);
     }
   };
 
   // 완전 삭제 (Hard Delete)
   const handleHardDelete = async (id: string) => {
-    //console.log(`완전 삭제 시도: id=${id}`);
     const confirmDelete = confirm(
       '정말 이 사용자를 완전 삭제하시겠습니까? 삭제 후 복구할 수 없습니다.'
     );
-    if (!confirmDelete) {
-      //console.log('완전 삭제 취소됨:', id);
-      return;
-    }
+    if (!confirmDelete) return;
 
     const { error } = await supabase.from('profiles').delete().eq('id', id);
     if (error) {
@@ -189,7 +171,6 @@ export default function AdminUserPage() {
     }
 
     setUsers((prev) => prev.filter((u) => u.id !== id));
-    //console.log('완전 삭제 성공:', id);
   };
 
   // 필터링
