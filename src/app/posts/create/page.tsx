@@ -5,7 +5,15 @@ import supabase from '@/lib/supabaseClient';
 import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 import { AiOutlineCamera } from "react-icons/ai";
-import Image from 'next/image'; // next/image 임포트
+import Image from 'next/image';
+
+// ✅ 파일명 안전하게 만드는 함수
+function sanitizeFilename(filename: string): string {
+  return filename
+    .normalize('NFKD')
+    .replace(/\s+/g, '_') // 공백을 언더스코어로
+    .replace(/[^a-zA-Z0-9._-]/g, ''); // 허용 문자 외 제거
+}
 
 export default function BoardCreatePage() {
   const { user, loading } = useUser();
@@ -15,10 +23,9 @@ export default function BoardCreatePage() {
   const [content, setContent] = useState('');
   const [nickname, setNickname] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null); // ✅ 미리보기용 상태 추가
+  const [preview, setPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  // 로그인한 사용자 닉네임 설정
   useEffect(() => {
     if (user) {
       setNickname(user.nickname || null);
@@ -28,7 +35,6 @@ export default function BoardCreatePage() {
   if (loading) return <p className="text-center mt-10 text-gray-500">로딩중...</p>;
   if (!user) return <p className="text-center mt-10 text-red-500">로그인 후 글쓰기가 가능합니다.</p>;
 
-  // 파일 변경 시 이미지 파일과 미리보기 설정
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -36,13 +42,12 @@ export default function BoardCreatePage() {
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string); // ✅ 미리보기용 데이터 저장
+        setPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // 게시글 제출
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
@@ -54,7 +59,8 @@ export default function BoardCreatePage() {
 
     if (imageFile) {
       setUploading(true);
-      const fileName = `${user.id}_${Date.now()}_${imageFile.name}`;
+      const safeName = sanitizeFilename(imageFile.name);
+      const fileName = `${user.id}_${Date.now()}_${safeName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('post-images')
@@ -96,21 +102,18 @@ export default function BoardCreatePage() {
   return (
     <div className="container_c max-w-3xl mx-auto px-4 py-6">
       <h1 className="padB text-3xl font-bold text-center filter_a">게시글 작성</h1>
-
       <h3 className="padB font-bold text-xl text-gray-500 text-center mb-6">자유롭게 사진과 글을 올려주세요 ^^</h3>
 
       <form onSubmit={handleSubmit} className="cBox magB bg-white p-6 shadow-2xl rounded-xl">
-
-        {/* ✅ 이미지 업로드 박스 (next/image + 아이콘 포함) */}
         <label className="magB w-full h-64 border-2 border-dashed border-gray-300 rounded-t-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-all overflow-hidden relative">
           {preview ? (
-            <Image 
-              src={preview} 
-              alt="preview" 
-              fill 
-              style={{ objectFit: 'cover' }} 
-              sizes="100vw" 
-              priority={false} 
+            <Image
+              src={preview}
+              alt="preview"
+              fill
+              style={{ objectFit: 'cover' }}
+              sizes="100vw"
+              priority={false}
               className="rounded-t"
             />
           ) : (
@@ -121,11 +124,9 @@ export default function BoardCreatePage() {
             </div>
           )}
           <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-          {/* 빈 태그 요청에 따라 유지 */}
           <></>
-        </label>  
+        </label>
 
-        {/* 제목 입력란 */}
         <input
           type="text"
           placeholder=" 제목을 입력하세요"
@@ -135,7 +136,6 @@ export default function BoardCreatePage() {
           className="pad filter_a w-full font-bold text-3xl p-3 rounded-t-lg shadow-lg focus:ring-2 focus:ring-blue-400"
         />
 
-        {/* 내용 입력란 */}
         <textarea
           placeholder=" 내용을 입력하세요..."
           value={content}
@@ -144,8 +144,7 @@ export default function BoardCreatePage() {
           rows={10}
           className="pad filter_a padT magBb w-full text-xl rounded-b-lg shadow-sm focus:ring-2 focus:ring-blue-400"
         />
-     
-       {/* 글 작성 버튼 */}
+
         <div className="magBb text-center">
           <button
             type="submit"
@@ -155,7 +154,6 @@ export default function BoardCreatePage() {
             {uploading ? '업로드 중...' : '업로드'}
           </button>
         </div>
-     
       </form>
     </div>
   );

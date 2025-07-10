@@ -30,6 +30,17 @@ export default function EditPostPage() {
   // 이미지 업로드 중 상태
   const [uploading, setUploading] = useState(false);
 
+  // 파일명 sanitize 함수: 한글, 공백, 특수문자 → 안전한 영숫자, -, _ 만 허용
+  function sanitizeFileName(filename: string) {
+    return filename
+      .normalize('NFD')                    // 유니코드 정규화
+      .replace(/[\u0300-\u036f]/g, '')    // 발음 구분자 제거
+      .replace(/[^a-zA-Z0-9.-_]/g, '-')  // 영문/숫자/.-_ 제외 문자 → -
+      .replace(/-+/g, '-')                // 연속된 - 하나로
+      .replace(/^-|-$/g, '')              // 시작/끝 - 제거
+      .toLowerCase();
+  }
+
   useEffect(() => {
     async function fetchPost() {
       // 게시글 데이터 가져오기
@@ -68,7 +79,11 @@ export default function EditPostPage() {
   // Supabase Storage에 이미지 업로드
   const uploadImage = async (file: File) => {
     setUploading(true);
-    const fileName = `${user?.id}_${Date.now()}_${file.name}`;
+
+    // 파일명 sanitize + user.id, timestamp 추가
+    const safeFileName = sanitizeFileName(file.name);
+    const fileName = `${user?.id}_${Date.now()}_${safeFileName}`;
+
     const { error: uploadError } = await supabase.storage
       .from('post-images')
       .upload(fileName, file);
@@ -132,10 +147,10 @@ export default function EditPostPage() {
           className="magB w-full h-64 border-2 border-dashed border-gray-300 rounded-t-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-all overflow-hidden relative"
         >
           {previewUrl ? (
-            // ✅ previewUrl은 Blob이라 <Image>가 지원하지 않음 → <img> 유지
+            // ✅ previewUrl은 Blob URL이라 Next.js <Image> 대신 <img> 사용
             <img src={previewUrl} alt="미리보기" className="w-full h-full object-cover rounded-t-lg" />
           ) : currentImageUrl ? (
-            // ✅ 공개 URL은 <Image fill /> 사용 (부모가 relative 클래스 포함되어야 함)
+            // ✅ 공개 URL은 Next.js Image fill 사용 (부모는 relative 포함)
             <Image
               src={currentImageUrl}
               alt="현재 이미지"

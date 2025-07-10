@@ -14,7 +14,7 @@ export default function ResetPasswordClient() {
   const token = searchParams.get('token');
 
   useEffect(() => {
-    console.log('ResetPasswordPage token:', token);
+    //console.log('ResetPasswordPage token:', token);
   }, [token]);
 
   useEffect(() => {
