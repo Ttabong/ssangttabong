@@ -70,7 +70,7 @@ export default function SignupForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="padL w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
+            className="padL magB w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
           />
         </div>
 
@@ -84,7 +84,7 @@ export default function SignupForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="padL w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
+            className="padL magB w-full px-5 py-4 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
           />
         </div>
 
@@ -98,7 +98,7 @@ export default function SignupForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className="padL w-full px-5 py-4 pr-24 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
+            className="padL magB w-full px-5 py-4 pr-24 rounded-lg border border-var(--color-primary-light) shadow-sm focus:outline-none focus:ring-2 focus:ring-var(--color-primary) transition"
           />
           {confirmPassword.length > 0 && (
             <span
@@ -112,6 +112,8 @@ export default function SignupForm() {
         </div>
       </div>
     </div>  
+
+    <div className='h-3'/>
 
       <div className="flex justify-center">
         <button
