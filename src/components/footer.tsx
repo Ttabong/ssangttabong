@@ -8,7 +8,7 @@ export default function Footer() {
                 소재지 서울특별시 광진구 자양3동 583-15 1층 <br/>
                 전화 02-447-9088</div>
 
-          <div className="text-right"> © 2025 Soo&Ssanttabong. All rights reserved.</div>
+          <div className="text-right"> © 2025 Soo&Ssangttabong. All rights reserved.</div>
 
      {/*     <ul className="social-links">
            <li>
