@@ -119,8 +119,8 @@ export default function Header() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/admin/users" className="btn-login text-center transition">
-                    회원관리
+                  <Link href="/admin" className="btn-login text-center transition">
+                    관리자페이지
                   </Link>
                 </li>
               </>

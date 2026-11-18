@@ -39,7 +39,7 @@ export default function ListingsGrid({
   totalCount,
 }: Props) {
 
-  // 매물 삭제 처리 함수
+ /* // 매물 삭제 처리 함수
   async function handleDelete(id: string) {
     const confirmDelete = window.confirm('정말 이 매물을 삭제하시겠습니까?');
     if (!confirmDelete) return;
@@ -50,6 +50,32 @@ export default function ListingsGrid({
       alert('❌ 삭제 실패: ' + error.message);
     } else {
       alert('✅ 매물이 삭제되었습니다.');
+      setListings((prev) => prev.filter((item) => item.id !== id));
+    }
+  }*/
+
+   // 매물 삭제 처리 함수 (실제 삭제가 아닌 보관 처리)
+  async function handleDelete(id: string) {
+    const confirmDelete = window.confirm(
+      '이 매물을 삭제하시겠습니까?\n삭제된 매물은 관리자 보관함에서 복원할 수 있습니다.'
+    );
+    if (!confirmDelete) return;
+
+    const { error } = await supabase
+      .from('listings')
+      .update({
+        is_deleted: true,
+        deleted_at: new Date().toISOString(),
+      })
+      .eq('id', id);
+
+    if (error) {
+      alert('❌ 매물 보관 실패: ' + error.message);
+      console.error('매물 보관 오류:', error);
+    } else {
+      alert('✅ 매물이 보관되었습니다.');
+
+      // 현재 화면의 매물 목록에서도 제거
       setListings((prev) => prev.filter((item) => item.id !== id));
     }
   }

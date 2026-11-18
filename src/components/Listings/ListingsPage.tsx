@@ -72,7 +72,11 @@ export default function ListingsPage({
 
     async function fetchData() {
       setLoading(true);
-      const { data, error } = await supabase.from('listings').select('*'); // 전체 매물 조회
+      // 보관되지 않은 매물만 전체 조회
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('is_deleted', false);
 
       if (error) {
         console.error('Supabase fetch error:', error.message);

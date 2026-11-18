@@ -21,7 +21,7 @@ export default function AdminControls({ listingId }: Props) {
     fetchRole();
   }, []);
 
-  async function handleDelete() {
+  /*async function handleDelete() {
     if (!confirm('정말 이 매물을 삭제하시겠습니까?')) return;
 
     const { error } = await supabase.from('listings').delete().eq('id', listingId);
@@ -31,8 +31,34 @@ export default function AdminControls({ listingId }: Props) {
       alert('매물이 삭제되었습니다.');
       router.push('/listings'); // 삭제 후 목록 페이지로 이동
     }
-  }
+  }  */
 
+  
+  // 매물 삭제 처리 (실제 삭제가 아닌 보관 처리)
+  async function handleDelete() {
+    if (
+      !confirm(
+        '정말 이 매물을 삭제하시겠습니까?\n삭제된 매물은 관리자 보관함에서 복원할 수 있습니다.'
+      )
+    ) return;
+
+    const { error } = await supabase
+      .from('listings')
+      .update({
+        is_deleted: true,
+        deleted_at: new Date().toISOString(),
+      })
+      .eq('id', listingId);
+
+    if (error) {
+      alert('매물 보관 실패: ' + error.message);
+      console.error('매물 보관 오류:', error);
+    } else {
+      alert('매물이 보관되었습니다.');
+      router.push('/listings'); // 보관 후 목록 페이지로 이동
+    }
+  }  
+   
   if (userRole !== 'admin') return null;
 
   return (
